@@ -6,27 +6,44 @@ import gamemap
 
 
 class MainWindow():
-
     def __init__(self, name):
 
         self.root = Tk()
         self.root.attributes("-zoomed", True)
         self.root.title("PyChamp Story - The Adventures of " + name)
 
-        self.hero = Hero(name)
-        self.herometer = Herometer(self.hero)
+        self.herometer = Herometer(name)
 
-        # create components
+        self._create_components()
+        self._arrange_components()
+
+        self._update_abilitybox()
+        self.entrybox.entry.focus_set()
+        self.dobutton['state'] = 'disabled'
+        self.dobutton.bind('<Return>', self.do_action)
+
+        self.update_gui()
+        self.root.mainloop()
+
+    def _create_components(self):
+
         self.dobutton = Button(self.root, text="Do", \
                                command=lambda: self.do_action(None))
-        self.dobutton['state'] = 'disabled'
         self.exitbutton = Button(self.root, text="Exit", \
                                  command=self.exit_action, bg='red', fg='white')
         self.entrybox = InputField(self.root, self.herometer)
         self.gameboard = gamemap.GameMap(self.root)
-        self.profile = Canvas(self.root, bg='green')  #placeholder
+        self.profile = Canvas(self.root, bg='green')  # placeholder
 
-        #arrange components
+        self.var = StringVar()
+        self.abilitybox = Label(self.root, textvariable=self.var, relief=RAISED)
+
+        self.var2 = StringVar()
+        self.outputbox = Message(self.root, textvariable=self.var2, relief=SUNKEN, anchor=SW, justify=LEFT, width=500)
+
+
+    def _arrange_components(self):
+
         self.dobutton.place(bordermode=OUTSIDE, relx=.60, rely=.88, \
                             relheight=.1, relwidth=.26)
         self.exitbutton.place(bordermode=OUTSIDE, relx=.88, rely=.88, \
@@ -37,16 +54,29 @@ class MainWindow():
                                      relheight=.75, relwidth=.68)
         self.profile.place(bordermode=OUTSIDE, relx=.02, rely=.02, \
                            relheight=.20, relwidth=.26)
+        self.abilitybox.place(bordermode=OUTSIDE, relx=.02, rely=.25, \
+                              relheight=.40, relwidth=.26)
+        self.outputbox.place(bordermode=OUTSIDE, relx=.02, rely=.68, \
+                              relheight=.17, relwidth=.26)
 
-        self.entrybox.entry.focus_set()
-        self.dobutton.bind('<Return>', self.do_action)
+    def _update_abilitybox(self):
 
-        self.update_gui()
-        self.root.mainloop()
+        abilitybox_text = ''
+        for meth in self.herometer.get_available_methods():
+            abilitybox_text += meth + "\n"
+        self.var.set(abilitybox_text)
+
+    def _update_outputbox(self, text):
+        if text is None:
+            text = ''
+        self.var2.set(self.var2.get() + '\n' + text)
 
     def do_action(self, event):
 
-        tkMessageBox.showinfo("Do Button Action", "This is the where execution happens.")
+        self._update_outputbox(self.herometer.execute_method(self.entrybox.entry.get()))
+        self.entrybox.entry.delete(0, END)
+        self.entrybox.entry.focus_set()
+
 
     def exit_action(self):
 
@@ -62,13 +92,18 @@ class MainWindow():
         elif not self.entrybox.is_executable:
             self.dobutton['state'] = 'disabled'
 
-        font = tkFont.Font(family="Times", size=-self.entrybox.entry.winfo_height() + 15)
+        font = tkFont.Font(family="Times", size=-(self.entrybox.entry.winfo_height()-15))
         self.entrybox.entry['font'] = font
         self.dobutton['font'] = font
         self.exitbutton['font'] = font
+
+        font2 = tkFont.Font(family="Times", size=-(self.abilitybox.winfo_height() / \
+                                                   (len(self.herometer.get_available_methods())+4)))
+        self.abilitybox['font'] = font2
+        self._update_abilitybox()
 
         if self.gameboard.gamemap.winfo_width() > 9 < self.gameboard.gamemap.winfo_height():
             self.gameboard.updateMap(self.gameboard.gamemap.winfo_height(), \
                                      self.gameboard.gamemap.winfo_width())
 
-        self.root.after(1, self.update_gui)
+        self.root.after(100, self.update_gui)  # lower number for faster gui response

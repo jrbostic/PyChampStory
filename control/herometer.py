@@ -8,9 +8,9 @@ __author__ = 'Jesse Bostic'
 class Herometer:
     """All functionality to format data and move Hero state info to view"""
 
-    def __init__(self, hero):
+    def __init__(self, hero_name):
 
-        self.hero = hero
+        self.hero = Hero(hero_name)
         self.abilities = self._build_ability_table(inspect.getmembers \
                                                        (Hero, predicate=inspect.ismethod))
         self.calls = self._build_calls_table()
@@ -66,3 +66,20 @@ class Herometer:
             return False
         else:
             return None
+
+    def execute_method(self, text):
+        result = ''
+        exec "result = self.hero." + text
+        return result
+
+    def get_available_methods(self):
+
+        method_list = []
+        for meth in self.abilities:
+            method_str = meth + '( '
+            if len(self.abilities[meth]):
+                method_str += self.abilities[meth][0]
+            method_str += ' )'
+            method_list.append(method_str)
+        return method_list
+

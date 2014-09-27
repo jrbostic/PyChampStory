@@ -6,10 +6,10 @@ class Hero:
         self.name = name
 
     def move(self, number):
-        pass
+        return self.name + " moved to tile " + str(number) + "!"
 
     def jump(self):
-        pass
+        return self.name + " jumped!"
 
     def search(self):
-        pass
+        return self.name + " searches... and finds nothing!"

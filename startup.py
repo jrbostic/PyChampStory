@@ -5,7 +5,7 @@ from os.path import *
 
 debug = computer_talk("DEBUG: Skip to game?", question=True, yesno=True, delay=0)
 if debug:
-    MainWindow('GOD')
+    MainWindow('Billy Bob Bobberson')
     exit()
 
 computer_talk(r"""
@@ -33,7 +33,7 @@ computer_talk(r"""
          
 """, delay=.001)
 
-computer_talk('\t\t\tLoading...', delay=.9)
+computer_talk('\t\t\tLoading...', delay=.6)
 computer_talk('\nHello!')
 computer_talk('I am your computer.')
 computer_talk('You can call me HAL...')
@@ -47,10 +47,10 @@ else:
 name = ''
 verified = False
 while not verified:
-    name = computer_talk("What's your name?", question=True)
-    verified = computer_talk("So, your name is " + name.title() \
+    name = computer_talk("What's your name?", question=True).title()
+    verified = computer_talk("So, your name is " + name
                              + "?", question=True, yesno=True)
-computer_talk("Nice to meet you, " + name.title() + "!")
+computer_talk("Nice to meet you, " + name + "!")
 
 tutor = computer_talk("Hey, would you like a brief tutorial on programming?", \
                       question=True, yesno=True)

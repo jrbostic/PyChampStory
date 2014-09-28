@@ -15,6 +15,7 @@ class GameMap:
 
         if type=='mapupdate':
             self.updateMap(herox=data[0], heroy=data[1])
+            self.gamemap.update_idletasks()
 
     def updateMap(self, herox=0, heroy=0):
 
@@ -55,5 +56,3 @@ class GameMap:
             for x in xrange(1, width-widthslice, widthslice):
                 count += 1
                 self.gamemap.create_text(x+widthslice//10+3, y+heightslice//10+2, text=str(count), fill="red")
-
-        self.gamemap.update_idletasks()

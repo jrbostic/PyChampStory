@@ -43,7 +43,7 @@ class MainWindow():
 
         self.var2 = StringVar()
         self.outputbox = Label(self.root, textvariable=self.var2, relief=SUNKEN,
-                               anchor=SW, justify=LEFT, width=500)
+                               anchor=SW, justify=LEFT, wraplength=355)
 
 
     def _arrange_components(self):

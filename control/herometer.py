@@ -1,4 +1,5 @@
 from model.protag import Hero
+from model.board import Board
 import inspect
 import re
 
@@ -10,9 +11,13 @@ class Herometer:
 
     def __init__(self, hero_name):
 
+        # couple hero and board so they can mediate their own crap.
         self.hero = Hero(hero_name)
-        self.abilities = self._build_ability_table(inspect.getmembers \
-                                                       (Hero, predicate=inspect.ismethod))
+        self.board = Board(self.hero)
+        self.hero._set_board(self.board)  # in this instance, I'm deeming this okay
+
+        self.abilities = self._build_ability_table(inspect.getmembers
+                                                   (Hero, predicate=inspect.ismethod))
         self.calls = self._build_calls_table()
 
 
@@ -68,9 +73,15 @@ class Herometer:
             return None
 
     def execute_method(self, text):
+
         result = ''
-        exec "result = self.hero." + text
+        if text is not None:
+            exec "result = self.hero." + text
         return result
+
+    def get_hero_position(self):
+
+        return self.hero.curr_tile
 
     def get_available_methods(self):
 
@@ -83,3 +94,5 @@ class Herometer:
             method_list.append(method_str)
         return method_list
 
+    def get_board_coupler(self):
+        return self.board.the_coupler

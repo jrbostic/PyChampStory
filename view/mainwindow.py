@@ -3,6 +3,7 @@ import tkMessageBox, tkFont, time
 from validator import *
 from control.herometer import Herometer
 import gamemap
+import threading
 
 
 class MainWindow():
@@ -23,40 +24,43 @@ class MainWindow():
         self.dobutton.bind('<Return>', self.do_action)
 
         self.update_gui()
+        self.gameboard.updateMap()
         self.root.mainloop()
 
     def _create_components(self):
 
-        self.dobutton = Button(self.root, text="Do", \
+        self.dobutton = Button(self.root, text="Do",
                                command=lambda: self.do_action(None))
-        self.exitbutton = Button(self.root, text="Exit", \
+        self.exitbutton = Button(self.root, text="Exit",
                                  command=self.exit_action, bg='red', fg='white')
         self.entrybox = InputField(self.root, self.herometer)
-        self.gameboard = gamemap.GameMap(self.root)
+        self.gameboard = gamemap.GameMap(self.root, self.herometer)
         self.profile = Canvas(self.root, bg='green')  # placeholder
 
         self.var = StringVar()
-        self.abilitybox = Label(self.root, textvariable=self.var, relief=RAISED)
+        self.abilitybox = Label(self.root, textvariable=self.var, relief=RAISED,
+                                anchor=NW, justify=LEFT, padx=15, pady=15)
 
         self.var2 = StringVar()
-        self.outputbox = Message(self.root, textvariable=self.var2, relief=SUNKEN, anchor=SW, justify=LEFT, width=500)
+        self.outputbox = Label(self.root, textvariable=self.var2, relief=SUNKEN,
+                               anchor=SW, justify=LEFT, width=500)
 
 
     def _arrange_components(self):
 
-        self.dobutton.place(bordermode=OUTSIDE, relx=.60, rely=.88, \
+        self.dobutton.place(bordermode=OUTSIDE, relx=.60, rely=.88,
                             relheight=.1, relwidth=.26)
-        self.exitbutton.place(bordermode=OUTSIDE, relx=.88, rely=.88, \
+        self.exitbutton.place(bordermode=OUTSIDE, relx=.88, rely=.88,
                               relheight=.1, relwidth=.1)
-        self.entrybox.entry.place(bordermode=OUTSIDE, relx=.02, \
+        self.entrybox.entry.place(bordermode=OUTSIDE, relx=.02,
                                   rely=.88, relheight=.1, relwidth=.59)
-        self.gameboard.gamemap.place(bordermode=OUTSIDE, relx=.3, rely=.05, \
+        self.gameboard.gamemap.place(bordermode=OUTSIDE, relx=.3, rely=.02,
                                      relheight=.75, relwidth=.68)
-        self.profile.place(bordermode=OUTSIDE, relx=.02, rely=.02, \
+        self.profile.place(bordermode=OUTSIDE, relx=.02, rely=.02,
                            relheight=.20, relwidth=.26)
-        self.abilitybox.place(bordermode=OUTSIDE, relx=.02, rely=.25, \
+        self.abilitybox.place(bordermode=OUTSIDE, relx=.02, rely=.25,
                               relheight=.40, relwidth=.26)
-        self.outputbox.place(bordermode=OUTSIDE, relx=.02, rely=.68, \
+        self.outputbox.place(bordermode=OUTSIDE, relx=.02, rely=.68,
                               relheight=.17, relwidth=.26)
 
     def _update_abilitybox(self):
@@ -69,11 +73,13 @@ class MainWindow():
     def _update_outputbox(self, text):
         if text is None:
             text = ''
-        self.var2.set(self.var2.get() + '\n' + text)
+        if text != '':
+            self.var2.set(self.var2.get() + '\n' + text)
 
     def do_action(self, event):
-
-        self._update_outputbox(self.herometer.execute_method(self.entrybox.entry.get()))
+        entered_text = self.entrybox.entry.get()
+        output_text = self.herometer.execute_method(entered_text)
+        self._update_outputbox(output_text)
         self.entrybox.entry.delete(0, END)
         self.entrybox.entry.focus_set()
 
@@ -97,13 +103,12 @@ class MainWindow():
         self.dobutton['font'] = font
         self.exitbutton['font'] = font
 
-        font2 = tkFont.Font(family="Times", size=-(self.abilitybox.winfo_height() / \
+        font2 = tkFont.Font(family="Times", size=-(self.abilitybox.winfo_height() /
                                                    (len(self.herometer.get_available_methods())+4)))
         self.abilitybox['font'] = font2
         self._update_abilitybox()
 
         if self.gameboard.gamemap.winfo_width() > 9 < self.gameboard.gamemap.winfo_height():
-            self.gameboard.updateMap(self.gameboard.gamemap.winfo_height(), \
-                                     self.gameboard.gamemap.winfo_width())
+            self.gameboard.updateMap()
 
-        self.root.after(100, self.update_gui)  # lower number for faster gui response
+        self.root.after(10, self.update_gui)  # lower number for faster gui response

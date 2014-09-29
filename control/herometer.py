@@ -36,13 +36,15 @@ class Herometer:
         for meth in self.abilities.keys():
             aMethod = []
             aMethod.append(meth + '(')
+            aMethod.append(re.compile(r'^' + meth + r'[\s]*$'))
+            aMethod.append(re.compile(r'^' + meth + r'[\s]*\($'))
             if len(self.abilities[meth]):
                 for param in self.abilities[meth]:
                     if param == 'number':
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+[\s]*$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+[\s]*\)$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$'))
                     elif param == 'string':
                         aMethod.append(re.compile(r'^' + meth + r'\([\s]*["]?$'))
                         aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*$'))
@@ -50,8 +52,8 @@ class Herometer:
                         aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*$'))
                         aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*\)$'))
             else:
-                aMethod.append(re.compile(r'^' + meth + r'\([\s]*$'))
-                aMethod.append(re.compile(r'^' + meth + r'\([\s]*\)$'))
+                aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*$'))
+                aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'))
             regexKey.append(aMethod)
         return regexKey
 
@@ -120,4 +122,5 @@ class Herometer:
         return method_list
 
     def get_board_coupler(self):
+
         return self.board.the_coupler

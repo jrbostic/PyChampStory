@@ -8,18 +8,8 @@ class GameMap:
         self.gamemap = Canvas(root)
         self.herometer = herometer
 
-    #     self.the_coupler = herometer.get_board_coupler()
-    #     self.the_coupler.attach_listener(self._update_map)
-    #
-    # def _update_map(self, type=None, data=None):
-    #
-    #     if type=='mapupdate':
-    #         self.updateMap(herox=data[0], heroy=data[1])
-    #         self.gamemap.update_idletasks()
 
     def updateMap(self, herox=0, heroy=0):
-
-        #event is fired by observable board... can use this field upon adding observers
 
         height = self.gamemap.winfo_height()
         width = self.gamemap.winfo_width()

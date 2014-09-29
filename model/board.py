@@ -48,9 +48,6 @@ class Board:
         self.the_coupler.listen_up(type="mapupdate", data=(currx, curry))
 
         time.sleep(1)
-        ##TEST FOR EVENT COLLISION HERE
-        ##REDRAW MAP
-        ##KEEP GOING
 
     def __iter__(self):
         for row in self.layout:

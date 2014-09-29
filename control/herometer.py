@@ -39,8 +39,16 @@ class Herometer:
             if len(self.abilities[meth]):
                 for param in self.abilities[meth]:
                     if param == 'number':
-                        aMethod.append(re.compile(r'^' + meth + r'\([0-9]+$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([0-9]+\)$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+[\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*[0-9]+[\s]*\)$'))
+                    elif param == 'string':
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["]?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["]?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*\)$'))
             else:
                 aMethod.append(re.compile(r'^' + meth + r'\([\s]*$'))
                 aMethod.append(re.compile(r'^' + meth + r'\([\s]*\)$'))
@@ -50,6 +58,10 @@ class Herometer:
     def validate_input(self, theInput):
         """Return True for full match, False for partial, None for no match"""
 
+        #somewhat superfluous structure to hold match state
+        matches = []
+
+        #partial string match
         match0 = False
         for call in self.calls:
             test_string = ''
@@ -57,17 +69,24 @@ class Herometer:
                 test_string = call[0][0:len(test_string) + 1]
                 match0 = match0 or test_string == theInput
 
+        #partial regex match
         match1 = False
         for partialRegex in self.calls:
-            match1 = match1 or partialRegex[1].match(theInput)
+            for i in xrange(1, len(partialRegex)-1):
+                match1 = match1 or partialRegex[i].match(theInput)
 
+        matches.append(match0 or match1)
+
+        #full regex match
         match2 = False
         for fullRegex in self.calls:
-            match2 = match2 or fullRegex[2].match(theInput)
+            match2 = match2 or fullRegex[-1].match(theInput)
 
-        if match2:
+        matches.append(match2)
+
+        if matches[1]:
             return True
-        elif match1 or match0:
+        elif matches[0]:
             return False
         else:
             return None
@@ -88,10 +107,16 @@ class Herometer:
         method_list = []
         for meth in self.abilities:
             method_str = meth + '( '
-            if len(self.abilities[meth]):
-                method_str += self.abilities[meth][0]
+
+            #determine how to display parameter in display string
+            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0]=='number':
+                method_str += '#' #self.abilities[meth][0]
+            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0]=='string':
+                method_str += '~' #self.abilities[meth][0]
+
             method_str += ' )'
             method_list.append(method_str)
+
         return method_list
 
     def get_board_coupler(self):

@@ -37,6 +37,9 @@ class Hero:
     def open(self):
         return "There's nothing for " + self.name + ' to open!'
 
+    def say(self, string):
+        return self.name + " says '" + string + "'."
+
     def _search(self):
 
         list = ["nothing at all", "a hat", "some underwear", "cash", "a badge of honor"]

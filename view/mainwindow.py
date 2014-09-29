@@ -14,6 +14,7 @@ class MainWindow():
         self.root.title("PyChamp Story - The Adventures of " + name)
 
         self.herometer = Herometer(name)
+        self.herometer.get_board_coupler().attach_listener(self.notify_observers)
 
         self._create_components()
         self._arrange_components()
@@ -112,3 +113,13 @@ class MainWindow():
             self.gameboard.updateMap()
 
         self.root.after(10, self.update_gui)  # lower number for faster gui response
+
+
+    def notify_observers(self, type=None, data=None):
+        """routes observable's notify messages"""
+
+        if type=='mapupdate':
+            self.gameboard.updateMap(herox=data[0], heroy=data[1])
+            self.gameboard.gamemap.update_idletasks()
+        elif type=='consoleupdate':
+            self._update_outputbox(data)

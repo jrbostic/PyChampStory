@@ -23,7 +23,7 @@ class Hero:
             self.dest_tile = {'x': (number-1)%10, 'y': (number-1)//10}
             while self.curr_tile != self.dest_tile:
                 self.board.step()
-            return self.name + " moved to tile at " + str(self.dest_tile) + " from tile at " + origin + "!"
+            #return self.name + " arrived at " + str(self.dest_tile) + "!"
 
     def jump(self):
         return self.name + " jumped!"

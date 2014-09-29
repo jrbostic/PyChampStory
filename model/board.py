@@ -38,7 +38,15 @@ class Board:
         elif curry > desty:
             self.hero.curr_tile['y'] -= 1
 
-        self.the_coupler.listen_up(type="mapupdate", data=(self.hero.curr_tile['x'], self.hero.curr_tile['y']))
+        last_tile_num = curry*10+currx+1 #if currx+1<10 else (curry+1)*10+currx+1
+        currx = self.hero.curr_tile['x'] ##reassign
+        curry = self.hero.curr_tile['y']
+        curr_tile_num = curry*10+currx+1 #if currx+1<10 else (curry+1)*10+currx+1
+
+        console_message = self.hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
+        self.the_coupler.listen_up(type="consoleupdate", data=console_message)
+        self.the_coupler.listen_up(type="mapupdate", data=(currx, curry))
+
         time.sleep(1)
         ##TEST FOR EVENT COLLISION HERE
         ##REDRAW MAP

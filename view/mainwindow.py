@@ -10,8 +10,9 @@ class MainWindow():
     def __init__(self, name):
 
         self.root = Tk()
-        self.root.attributes("-zoomed", True)
+        self.root.attributes("-fullscreen", True)
         self.root.title("PyChamp Story - The Adventures of " + name)
+        self.root['bg'] = '#228b22'
 
         self.herometer = Herometer(name)
         self.herometer.get_board_coupler().attach_listener(self.notify_observers)

@@ -6,6 +6,10 @@ class GameMap:
     def __init__(self, root, herometer):
 
         self.gamemap = Canvas(root)
+        self.gamemap['bg'] = '#228b22'
+        self.gamemap['bd'] = 0
+        self.gamemap['relief'] = 'solid'
+
         self.herometer = herometer
 
 
@@ -20,13 +24,14 @@ class GameMap:
         boardwidth = widthslice * 10 + 2  # for flush borders
         boardheight = heightslice * 10 + 1
 
-        for x in xrange(1, width, widthslice):
-            y = 0
-            self.gamemap.create_line(x, y, x, boardheight, fill="blue")
 
-        for y in xrange(1, height, heightslice):
+        for x in xrange(2, width, widthslice):
+            y = 0
+            self.gamemap.create_line(x, y, x, boardheight, fill="black", width=2)
+
+        for y in xrange(2, height, heightslice):
             x = 0
-            self.gamemap.create_line(x, y, boardwidth, y, fill="blue")
+            self.gamemap.create_line(x, y, boardwidth, y, fill="black", width=2)
 
         hero_pos = self.herometer.get_hero_position()
 
@@ -38,11 +43,11 @@ class GameMap:
             herox *= widthslice
             heroy *= heightslice
 
-        self.gamemap.create_oval(herox+4, heroy+4, herox+widthslice//3, heroy+heightslice-3,
-                                 fill="green", outline="light green")
+        self.gamemap.create_oval(herox+widthslice//4, heroy+heightslice//3, herox+widthslice//4+20, heroy+heightslice//3+20,
+                                 fill="green", outline="black")
 
         count = 0
         for y in xrange(1, height-heightslice, heightslice):
             for x in xrange(1, width-widthslice, widthslice):
                 count += 1
-                self.gamemap.create_text(x+widthslice//10+3, y+heightslice//10+2, text=str(count), fill="red")
+                self.gamemap.create_text(x+widthslice//10+3, y+heightslice//10+2, text=str(count), fill="blue")

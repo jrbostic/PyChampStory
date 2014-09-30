@@ -45,16 +45,33 @@ class Herometer:
                         aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+$'))
                         aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$'))
                         aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$'))
+
+                        aMethod.append([re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)[\s]*$')])
+
                     elif param == 'string':
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["]?$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["]?$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*$'))
-                        aMethod.append(re.compile(r'^' + meth + r'\([\s]*["][\w\s]*["][\s]*\)$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["]?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["]?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*$'))
+
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\']?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$'))
+                        aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*$'))
+
+                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)$'),
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)[\s]*$'),
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$'),
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)[\s]*$')]
+                        aMethod.append(full_re)
             else:
                 aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*$'))
-                aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'))
+                full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'),
+                            re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
+                aMethod.append(full_re)
+
             regexKey.append(aMethod)
+
         return regexKey
 
     def validate_input(self, theInput):
@@ -79,10 +96,11 @@ class Herometer:
 
         matches.append(match0 or match1)
 
-        #full regex match
+        #full regex match -bad naming convention
         match2 = False
         for fullRegex in self.calls:
-            match2 = match2 or fullRegex[-1].match(theInput)
+            for fullmatch in fullRegex[-1]:
+                match2 = match2 or fullmatch.match(theInput)
 
         matches.append(match2)
 

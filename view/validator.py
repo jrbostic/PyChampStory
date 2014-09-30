@@ -30,7 +30,7 @@ class InputField():
         print "W='%s'" % W
         """
 
-        is_complete = self.herometer.validate_input(P.strip())
+        is_complete = self.herometer.validate_input(P.lstrip())
 
         self.is_executable = False
 

@@ -55,20 +55,24 @@ class Herometer:
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$'),
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$')]
 
-                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$')]
+                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)[\s]*$')]
 
                     elif param == 'string':
                         partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["]?$'),
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*$'),
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["]?$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*$'),
 
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*[\']?$'),
                                       re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$')]
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*$')]
 
                         full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)$'),
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)[\s]*$'),
 
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$')]
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$'),
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)[\s]*$')]
 
             else:
 

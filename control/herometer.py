@@ -43,47 +43,41 @@ class Herometer:
             aMethod.append(meth)
             aMethod.append([re.compile(r'^' + meth + r'[\s]*$'), re.compile(r'^' + meth + r'[\s]*\($')])
 
+            partial_re = None
+            full_re = None
+
             if len(self.abilities[meth]):
                 for param in self.abilities[meth]:
 
-                    partial_re = None
-                    full_re = None
-
                     if param == 'number':
-                        partial_re = [aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$'))]
+                        partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$')]
 
-                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)[\s]*$')]
+                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$')]
 
                     elif param == 'string':
-                        partial_re = [aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["]?$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["]?$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*$')),
+                        partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["]?$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["]?$'),
 
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\']?$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$')),
-                                      aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*$'))]
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\']?$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*$'),
+                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$')]
 
                         full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)$'),
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)[\s]*$'),
 
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$'),
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)[\s]*$')]
+                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$')]
 
-                    aMethod[1].append(partial_re)
-                    aMethod.append(full_re)
             else:
 
                 partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*$')]
                 full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'),
                            re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
 
-                aMethod[1].append(partial_re)
-                aMethod.append(full_re)
+            aMethod[1].extend(partial_re)
+            aMethod.append(full_re)
 
             regexKey.append(aMethod)
 
@@ -92,32 +86,21 @@ class Herometer:
     def validate_input(self, theInput):
         """Return True for full match, False for partial, None for no match"""
 
-        # somewhat superfluous structure to hold match state
-        matches = [False, False]
+        matches = [False, False, False]
 
-        # partial string match
-        match0 = False
+        #partial sequential and regex match
         for call in self.calls:
-            test_string = ''
-            for char in theInput:
-                test_string = call[0][0][0:len(test_string) + 1]
-                matches[0] = matches[0] or test_string == theInput
+            matches[0] = matches[0] or theInput == call[0][0:len(theInput)]
+            print theInput + " " + call[0][0:len(theInput)]
 
-        # partial regex match
-        match1 = False
         for partialRegex in self.calls:
             for list_of_regex in partialRegex[1]:
-                for partialmatch in list_of_regex:
-                    matches[0] = matches[0] or partialmatch.match(theInput)
+                matches[0] = matches[0] or list_of_regex.match(theInput) is not None
 
-
-        #full regex match -bad naming convention
-        match2 = False
+        # full regex match -bad naming convention
         for fullRegex in self.calls:
             for list_of_regex in fullRegex[2]:
-                for fullmatch in list_of_regex:
-                    matches[1] = matches[1] or fullmatch.match(theInput)
-
+                matches[1] = matches[1] or list_of_regex.match(theInput) is not None
 
         if matches[1]:
             return True
@@ -125,6 +108,7 @@ class Herometer:
             return False
         else:
             return None
+
 
     def execute_method(self, text):
 
@@ -157,3 +141,7 @@ class Herometer:
     def get_board_coupler(self):
 
         return self.board.the_coupler
+
+
+h = Herometer(Hero("Abraham"))
+print h.calls

@@ -67,7 +67,7 @@ class Herometer:
             else:
                 aMethod.append(re.compile(r'^' + meth + r'[\s]*\([\s]*$'))
                 full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'),
-                            re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
+                           re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
                 aMethod.append(full_re)
 
             regexKey.append(aMethod)
@@ -77,7 +77,7 @@ class Herometer:
     def validate_input(self, theInput):
         """Return True for full match, False for partial, None for no match"""
 
-        #somewhat superfluous structure to hold match state
+        # somewhat superfluous structure to hold match state
         matches = []
 
         #partial string match
@@ -91,7 +91,7 @@ class Herometer:
         #partial regex match
         match1 = False
         for partialRegex in self.calls:
-            for i in xrange(1, len(partialRegex)-1):
+            for i in xrange(1, len(partialRegex) - 1):
                 match1 = match1 or partialRegex[i].match(theInput)
 
         matches.append(match0 or match1)
@@ -128,11 +128,11 @@ class Herometer:
         for meth in self.abilities:
             method_str = meth + '( '
 
-            #determine how to display parameter in display string
-            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0]=='number':
-                method_str += '#' #self.abilities[meth][0]
-            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0]=='string':
-                method_str += '~' #self.abilities[meth][0]
+            # determine how to display parameter in display string
+            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0] == 'number':
+                method_str += '#'  #self.abilities[meth][0]
+            if (len(self.abilities[meth]) > 0) and self.abilities[meth][0] == 'string':
+                method_str += '~'  #self.abilities[meth][0]
 
             method_str += ' )'
             method_list.append(method_str)

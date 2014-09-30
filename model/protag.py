@@ -29,7 +29,8 @@ class Hero:
         return self.name + " jumped!"
 
     def search(self):
-        return self.name + " searches... and finds " + self._search() + "!"
+        list = ["nothing at all", "a hat", "some underwear", "cash", "a badge of honor"]
+        return self.name + " searches... and finds " + random.choice(list) + "!"
 
     def breakdance(self):
         return self.name + " busts a sweet move!"
@@ -40,7 +41,5 @@ class Hero:
     def say(self, string):
         return self.name + " says '" + string + "'."
 
-    def _search(self):
-
-        list = ["nothing at all", "a hat", "some underwear", "cash", "a badge of honor"]
-        return random.choice(list)
+    def ask(self, string):
+        return self.name + " asks '" + string + "?'"

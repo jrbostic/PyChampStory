@@ -2,8 +2,8 @@ __author__ = 'jessebostic'
 
 """Returns randomized event"""
 
-class EventGenerator:
 
+class EventGenerator:
     def __init__(self):
         pass
 

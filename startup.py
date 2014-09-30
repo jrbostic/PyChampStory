@@ -52,7 +52,7 @@ while not verified:
                              + "?", question=True, yesno=True)
 computer_talk("Nice to meet you, " + name + "!")
 
-tutor = computer_talk("Hey, would you like a brief tutorial on programming?", \
+tutor = computer_talk("Hey, would you like a brief tutorial on programming?",
                       question=True, yesno=True)
 if tutor:
     tutpath = "tutorials/"
@@ -87,10 +87,10 @@ if tutor:
         else:
             computer_talk("Select either valid tutorial or exit.")
 
-play = computer_talk("Would you like to play a GAME?", question=True, \
+play = computer_talk("Would you like to play a GAME?", question=True,
                      yesno=True)
 
-if play == False:
+if not play:
     computer_talk("Fine, be that way...")
     exit()
 

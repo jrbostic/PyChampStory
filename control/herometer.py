@@ -39,9 +39,7 @@ class Herometer:
         regexKey = []
         for meth in self.abilities.keys():
 
-            aMethod = []
-            aMethod.append(meth)
-            aMethod.append([re.compile(r'^' + meth + r'[\s]*$'), re.compile(r'^' + meth + r'[\s]*\($')])
+            method_matcher = [meth, [re.compile(r'^' + meth + r'[\s]*$'), re.compile(r'^' + meth + r'[\s]*\($')]]
 
             partial_re = None
             full_re = None
@@ -80,10 +78,10 @@ class Herometer:
                 full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'),
                            re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
 
-            aMethod[1].extend(partial_re)
-            aMethod.append(full_re)
+            method_matcher[1].extend(partial_re)
+            method_matcher.append(full_re)
 
-            regexKey.append(aMethod)
+            regexKey.append(method_matcher)
 
         return regexKey
 
@@ -92,10 +90,9 @@ class Herometer:
 
         matches = [False, False, False]
 
-        #partial sequential and regex match
+        # partial sequential and regex match
         for call in self.calls:
             matches[0] = matches[0] or theInput == call[0][0:len(theInput)]
-            print theInput + " " + call[0][0:len(theInput)]
 
         for partialRegex in self.calls:
             for list_of_regex in partialRegex[1]:
@@ -112,7 +109,6 @@ class Herometer:
             return False
         else:
             return None
-
 
     def execute_method(self, text):
 
@@ -145,7 +141,3 @@ class Herometer:
     def get_board_coupler(self):
 
         return self.board.the_coupler
-
-
-h = Herometer(Hero("Abraham"))
-print h.calls

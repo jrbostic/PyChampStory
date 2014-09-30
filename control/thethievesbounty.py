@@ -1,11 +1,7 @@
-from control import *
-from model import *
-from view import *
-
 __author__ = 'jessebostic'
 
-class Coupler:
 
+class Coupler:
     def __init__(self, board):
         self.board = board
         self.listeners = []

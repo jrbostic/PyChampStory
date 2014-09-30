@@ -1,13 +1,10 @@
 import time
-import threading
-from eventgen import EventGenerator
-from model.protag import *
 
+from eventgen import EventGenerator
 from control.thethievesbounty import Coupler
 
 
 class Board:
-
     def __init__(self, hero):
         self.hero = hero
         self.level = 0
@@ -38,10 +35,10 @@ class Board:
         elif curry > desty:
             self.hero.curr_tile['y'] -= 1
 
-        last_tile_num = curry*10+currx+1 #if currx+1<10 else (curry+1)*10+currx+1
-        currx = self.hero.curr_tile['x'] ##reassign
+        last_tile_num = curry * 10 + currx + 1  # if currx+1<10 else (curry+1)*10+currx+1
+        currx = self.hero.curr_tile['x']  # #reassign
         curry = self.hero.curr_tile['y']
-        curr_tile_num = curry*10+currx+1 #if currx+1<10 else (curry+1)*10+currx+1
+        curr_tile_num = curry * 10 + currx + 1  # if currx+1<10 else (curry+1)*10+currx+1
 
         console_message = self.hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
         self.the_coupler.listen_up(type="consoleupdate", data=console_message)

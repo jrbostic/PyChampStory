@@ -1,16 +1,17 @@
-from Tkinter import *
-import tkMessageBox, tkFont, time
+import tkMessageBox
+import tkFont
+
 from validator import *
 from control.herometer import Herometer
 import gamemap
-import threading
 
 
 class MainWindow():
     def __init__(self, name):
 
         self.root = Tk()
-        self.root.attributes("-fullscreen", True)
+        self.root.attributes("-zoomed", True)
+        #self.root.resizable(0,0)
         self.root.title("PyChamp Story - The Adventures of " + name)
         self.root['bg'] = '#228b22'
 
@@ -37,6 +38,7 @@ class MainWindow():
                                  command=self.exit_action, bg='red', fg='white')
         self.entrybox = InputField(self.root, self.herometer)
         self.gameboard = gamemap.GameMap(self.root, self.herometer)
+        self.gameboard.gamemap.config(highlightbackground='#228b22')
         self.profile = Canvas(self.root, bg='green')  # placeholder
 
         self.var = StringVar()

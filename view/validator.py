@@ -1,7 +1,4 @@
 from Tkinter import *
-from control.herometer import Herometer
-from model.protag import Hero
-import re
 
 
 class InputField():
@@ -9,9 +6,9 @@ class InputField():
 
     def __init__(self, root, herometer):
 
-        vcmd = (root.register(self.on_validate), \
+        vcmd = (root.register(self.on_validate),
                 '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        self.entry = Entry(root, validate="key", \
+        self.entry = Entry(root, validate="key",
                            validatecommand=vcmd)
         self.is_executable = False
         self.herometer = herometer

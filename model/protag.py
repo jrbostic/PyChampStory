@@ -1,11 +1,9 @@
-import time
-import threading
 import random
 
 __author__ = 'jessebostic'
 
-class Hero:
 
+class Hero:
     def __init__(self, name):
         self.name = name
         self.curr_tile = {'x': 0, 'y': 0}
@@ -20,10 +18,10 @@ class Hero:
             return "You crazy man... philosophical... seriously."
         else:
             origin = str(self.curr_tile)
-            self.dest_tile = {'x': (number-1)%10, 'y': (number-1)//10}
+            self.dest_tile = {'x': (number - 1) % 10, 'y': (number - 1) // 10}
             while self.curr_tile != self.dest_tile:
                 self.board.step()
-            #return self.name + " arrived at " + str(self.dest_tile) + "!"
+                # return self.name + " arrived at " + str(self.dest_tile) + "!"
 
     def jump(self):
         return self.name + " jumped!"

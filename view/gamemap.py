@@ -49,5 +49,5 @@ class GameMap:
         for y in xrange(1, height - heightslice, heightslice):
             for x in xrange(1, width - widthslice, widthslice):
                 count += 1
-                self.gamemap.create_text(x + widthslice // 10 + 3, y + heightslice // 10 + 2, text=str(count),
+                self.gamemap.create_text(x + widthslice // 10 + 3, y + heightslice // 10 + 4, text=str(count),
                                          fill="blue")

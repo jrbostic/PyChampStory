@@ -42,7 +42,7 @@ class Board:
         curr_tile_num = curry * 10 + currx + 1
 
         console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
-        self.coupler.add_job({'message': console_message, 'gamemap': self.layout, 'hero': hero.__copy__()})
+        self.coupler.add_job({'message': console_message, 'board': self.layout, 'hero': hero.__copy__()})
 
         return True #this will allow interuption of a move by event once implemented
 

@@ -8,11 +8,11 @@ class Coupler:
 
     def __init__(self):
         self.jobs = []
-        self.jobs.append({'message': "Welcome to the Realm of PyChamp!", 'gamemap': None, 'hero': Hero('NoneYet')})
+        self.jobs.append({'message': "Welcome to the Realm of PyChamp!", 'board': None, 'hero': Hero('NoneYet')})
 
     def add_job(self, job):  #jobs are just dictionaries of strings to object refs
         self.jobs.append(job)
-        print (str(job))
+        #print (str(job))
 
     def ________________get_jobs(self):
         jobs = copy.deepcopy(self.jobs)

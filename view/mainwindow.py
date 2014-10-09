@@ -28,7 +28,6 @@ class MainWindow():
         self.dobutton.bind('<Return>', self.do_action)
 
         self.timer = time.time()-.75
-        print (self.timer)
 
         self.update_gui()
         self.root.mainloop()
@@ -128,7 +127,7 @@ class MainWindow():
         job = self.coupler.get_a_job()
         if job is not None:
             for component in job.keys():
-                if component == 'gamemap':
+                if component == 'board':
                     hero = job['hero']
                     if hero is not None:
                         self.gameboard.updateMap(herox=hero.curr_tile['x'], heroy=hero.curr_tile['y'])

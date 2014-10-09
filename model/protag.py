@@ -1,4 +1,5 @@
 import random
+import copy
 
 __author__ = 'jessebostic'
 
@@ -16,12 +17,15 @@ class Hero:
 
         if 1 > number or number > 100:
             return "You crazy man... philosophical... seriously."
+
         else:
             origin = str(self.curr_tile)
             self.dest_tile = {'x': (number - 1) % 10, 'y': (number - 1) // 10}
-            while self.curr_tile != self.dest_tile:
-                self.board.step()
-                # return self.name + " arrived at " + str(self.dest_tile) + "!"
+            cont = True
+            while self.curr_tile != self.dest_tile and cont:
+                cont = self.board.step(self)
+            self.dest_tile = self.curr_tile #if move breaks early by event, player will start where interrupted
+
 
     def jump(self):
         return self.name + " jumped!"
@@ -41,3 +45,13 @@ class Hero:
 
     def ask(self, string):
         return self.name + " asks '" + string + "?'"
+
+    def __copy__(self):
+        if self is not None:
+            aCopy = Hero(self.name)
+            aCopy.curr_tile = copy.deepcopy(self.curr_tile)
+            aCopy.dest_tile = copy.deepcopy(self.dest_tile)
+            return aCopy
+
+    def __str__(self):
+        return str(self.curr_tile) + " " + str(self.dest_tile)

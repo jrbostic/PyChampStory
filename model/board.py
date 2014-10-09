@@ -1,4 +1,5 @@
-import time
+
+import copy
 
 from eventgen import EventGenerator
 from control.thethievesbounty import Coupler
@@ -6,11 +7,11 @@ from control.thethievesbounty import Coupler
 
 class Board:
     def __init__(self, hero):
-        self.hero = hero
+        #self.hero = hero
         self.level = 0
         self.layout = self._construct_layout()
 
-        self.the_coupler = Coupler(self)
+        self.coupler = Coupler()
 
     def _construct_layout(self):
         the_layout = []
@@ -20,31 +21,30 @@ class Board:
                 the_layout[i].append(self.Tile(i, n, self.level))
         return the_layout
 
-    def step(self):
-        currx = self.hero.curr_tile['x']
-        curry = self.hero.curr_tile['y']
-        destx = self.hero.dest_tile['x']
-        desty = self.hero.dest_tile['y']
+    def step(self, hero):
+        currx = hero.curr_tile['x']
+        curry = hero.curr_tile['y']
+        destx = hero.dest_tile['x']
+        desty = hero.dest_tile['y']
 
         if currx < destx:
-            self.hero.curr_tile['x'] += 1
+            hero.curr_tile['x'] += 1
         elif curry < desty:
-            self.hero.curr_tile['y'] += 1
+            hero.curr_tile['y'] += 1
         elif currx > destx:
-            self.hero.curr_tile['x'] -= 1
+            hero.curr_tile['x'] -= 1
         elif curry > desty:
-            self.hero.curr_tile['y'] -= 1
+            hero.curr_tile['y'] -= 1
 
-        last_tile_num = curry * 10 + currx + 1  # if currx+1<10 else (curry+1)*10+currx+1
-        currx = self.hero.curr_tile['x']  # #reassign
-        curry = self.hero.curr_tile['y']
-        curr_tile_num = curry * 10 + currx + 1  # if currx+1<10 else (curry+1)*10+currx+1
+        last_tile_num = curry * 10 + currx + 1
+        currx = hero.curr_tile['x']  # #reassign
+        curry = hero.curr_tile['y']
+        curr_tile_num = curry * 10 + currx + 1
 
-        console_message = self.hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
-        self.the_coupler.listen_up(type="consoleupdate", data=console_message)
-        self.the_coupler.listen_up(type="mapupdate", data=(currx, curry))
+        console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
+        self.coupler.add_job({'message': console_message, 'gamemap': self.layout, 'hero': hero.__copy__()})
 
-        time.sleep(1)
+        return True #this will allow interuption of a move by event once implemented
 
     def __iter__(self):
         for row in self.layout:
@@ -60,6 +60,7 @@ class Board:
         def __init__(self, x, y, level):
             self.x = x
             self.y = y
+            self.visited = False
             self.bg = self.LEVEL_COLORS[level]
             self.event = self.EVENT_GEN.generate_event()
 

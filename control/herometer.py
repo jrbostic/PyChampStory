@@ -140,4 +140,4 @@ class Herometer:
 
     def get_board_coupler(self):
 
-        return self.board.the_coupler
+        return self.board.coupler

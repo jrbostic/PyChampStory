@@ -1,5 +1,6 @@
 import tkMessageBox
 import tkFont
+import time
 
 from validator import *
 from control.herometer import Herometer
@@ -16,7 +17,7 @@ class MainWindow():
         self.root['bg'] = '#228b22'
 
         self.herometer = Herometer(name)
-        self.herometer.get_board_coupler().attach_listener(self.notify_observers)
+        self.coupler = self.herometer.get_board_coupler()
 
         self._create_components()
         self._arrange_components()
@@ -26,8 +27,10 @@ class MainWindow():
         self.dobutton['state'] = 'disabled'
         self.dobutton.bind('<Return>', self.do_action)
 
+        self.timer = time.time()-.75
+        print (self.timer)
+
         self.update_gui()
-        self.gameboard.updateMap()
         self.root.mainloop()
 
     def _create_components(self):
@@ -112,17 +115,23 @@ class MainWindow():
         self.abilitybox['font'] = font2
         self._update_abilitybox()
 
-        if self.gameboard.gamemap.winfo_width() > 9 < self.gameboard.gamemap.winfo_height():
-            self.gameboard.updateMap()
+        # if self.gameboard.gamemap.winfo_width() > 9 < self.gameboard.gamemap.winfo_height():
+        #     self.gameboard.updateMap()
 
-        self.root.after(10, self.update_gui)  # lower number for faster gui response
+        if time.time() - self.timer > 1:
+            self._check_jobs()
+            self.timer = time.time()
 
+        self.root.after(60, self.update_gui)  # lower number for faster gui response
 
-    def notify_observers(self, type=None, data=None):
-        """routes observable's notify messages"""
+    def _check_jobs(self):
+        job = self.coupler.get_a_job()
+        if job is not None:
+            for component in job.keys():
+                if component == 'gamemap':
+                    hero = job['hero']
+                    if hero is not None:
+                        self.gameboard.updateMap(herox=hero.curr_tile['x'], heroy=hero.curr_tile['y'])
 
-        if type=='mapupdate':
-            self.gameboard.updateMap(herox=data[0], heroy=data[1])
-            self.gameboard.gamemap.update_idletasks()
-        elif type=='consoleupdate':
-            self._update_outputbox(data)
+                elif component == 'message':
+                    self._update_outputbox(job[component])

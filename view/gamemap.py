@@ -31,15 +31,16 @@ class GameMap:
             x = 0
             self.gamemap.create_line(x, y, boardwidth, y, fill="black", width=2)
 
-        hero_pos = self.herometer.get_hero_position()
+        # hero_pos = self.herometer.get_hero_position()
+        #
+        # if herox == 0 and heroy == 0:
+        #     herox = hero_pos['x'] * widthslice
+        #     heroy = hero_pos['y'] * heightslice
+        #
+        # else:
 
-        if herox == 0 and heroy == 0:
-            herox = hero_pos['x'] * widthslice
-            heroy = hero_pos['y'] * heightslice
-
-        else:
-            herox *= widthslice
-            heroy *= heightslice
+        herox *= widthslice
+        heroy *= heightslice
 
         self.gamemap.create_oval(herox + widthslice // 4, heroy + heightslice // 3, herox + widthslice // 4 + 20,
                                  heroy + heightslice // 3 + 20,

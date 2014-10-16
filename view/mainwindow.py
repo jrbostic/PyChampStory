@@ -9,6 +9,7 @@ import gamemap
 
 class MainWindow():
     def __init__(self, name):
+        """Conducts setup of the main window"""
 
         self.root = Tk()
         self.root.attributes("-zoomed", True)
@@ -33,6 +34,7 @@ class MainWindow():
         self.root.mainloop()
 
     def _create_components(self):
+        """Creates the components (no placement)"""
 
         self.dobutton = Button(self.root, text="Do",
                                command=lambda: self.do_action(None))
@@ -53,6 +55,7 @@ class MainWindow():
 
 
     def _arrange_components(self):
+        """Arrange layout of components"""
 
         self.dobutton.place(bordermode=OUTSIDE, relx=.60, rely=.88,
                             relheight=.1, relwidth=.26)
@@ -70,6 +73,7 @@ class MainWindow():
                               relheight=.17, relwidth=.26)
 
     def _update_abilitybox(self):
+        """Simple update for hero ability box"""
 
         abilitybox_text = ''
         for meth in self.herometer.get_available_methods():
@@ -77,12 +81,16 @@ class MainWindow():
         self.var.set(abilitybox_text)
 
     def _update_outputbox(self, text):
+        """Simple update for output box"""
+
         if text is None:
             text = ''
         if text != '':
             self.var2.set(self.var2.get() + '\n' + text)
 
     def do_action(self, event):
+        """Executes do action of DO button"""
+
         entered_text = self.entrybox.entry.get()
         output_text = self.herometer.execute_method(entered_text)
         self._update_outputbox(output_text)
@@ -91,12 +99,14 @@ class MainWindow():
 
 
     def exit_action(self):
+        """Facilitates program termination"""
 
         answer = tkMessageBox.askyesno('Really Quit?', 'Are you sure you want to quit?')
         if answer:
             exit()
 
     def update_gui(self):
+        """Main event loop"""
 
         if self.entrybox.is_executable and self.dobutton['state'] == 'disabled':
             self.dobutton['state'] = 'active'
@@ -114,9 +124,6 @@ class MainWindow():
         self.abilitybox['font'] = font2
         self._update_abilitybox()
 
-        # if self.gameboard.gamemap.winfo_width() > 9 < self.gameboard.gamemap.winfo_height():
-        #     self.gameboard.updateMap()
-
         if time.time() - self.timer > 1:
             self._check_jobs()
             self.timer = time.time()
@@ -124,13 +131,15 @@ class MainWindow():
         self.root.after(60, self.update_gui)  # lower number for faster gui response
 
     def _check_jobs(self):
+        """Interprets next job queue item and routes update"""
+
         job = self.coupler.get_a_job()
         if job is not None:
             for component in job.keys():
                 if component == 'board':
                     hero = job['hero']
                     if hero is not None:
-                        self.gameboard.updateMap(herox=hero.curr_tile['x'], heroy=hero.curr_tile['y'])
+                        self.gameboard.updateMap(herox=hero.curr_tile['x'], heroy=hero.curr_tile['y'], tiles=job['board'])
 
                 elif component == 'message':
                     self._update_outputbox(job[component])

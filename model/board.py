@@ -1,27 +1,39 @@
-
-import copy
-
+import random
 from eventgen import EventGenerator
 from control.thethievesbounty import Coupler
+from protag import Hero
 
 
 class Board:
     def __init__(self, hero):
-        #self.hero = hero
-        self.level = 0
-        self.layout = self._construct_layout()
+        """Initialize at level 0, setup layout and coupler"""
 
         self.coupler = Coupler()
 
-    def _construct_layout(self):
+        self.level = 0
+        self.layout = self._construct_layout()
+
+        #adds delay to discovery coloring of tile (and sets up necessary tile state)
+        self.coupler.add_job({'message': "Welcome to the Realm of PyChamp!", 'board': self._copy_layout(), 'hero': hero})
+        self.layout[0][0].visited = True
+        self.coupler.add_job({'message': "Your adventure begins...", 'board': self._copy_layout(), 'hero': Hero('Default')})
+
+    def _construct_layout(self, ref=None):
+        """Create layout, a multidimensional array, 10 x 10"""
+
         the_layout = []
         for i in xrange(10):
             the_layout.append([])
             for n in xrange(10):
-                the_layout[i].append(self.Tile(i, n, self.level))
+                if ref is not None:
+                    the_layout[i].append(ref.layout[n][i].copy())
+                else:
+                    the_layout[i].append(self.Tile(n, i, self.level))
         return the_layout
 
     def step(self, hero):
+        """Handles a single hero step on board"""
+
         currx = hero.curr_tile['x']
         curry = hero.curr_tile['y']
         destx = hero.dest_tile['x']
@@ -41,28 +53,59 @@ class Board:
         curry = hero.curr_tile['y']
         curr_tile_num = curry * 10 + currx + 1
 
-        console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
-        self.coupler.add_job({'message': console_message, 'board': self.layout, 'hero': hero.__copy__()})
+        self.layout[curry][currx].visited = True
 
-        return True #this will allow interuption of a move by event once implemented
+        console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
+        self.coupler.add_job({'message': console_message, 'board': self._copy_layout(), 'hero': hero.__copy__()})
+
+        return True #this will allow interruption of a move by event once implemented
+
+    def _copy_layout(self):
+        """Copies layout of board for Coupler input"""
+
+        return self._construct_layout(ref=self)
 
     def __iter__(self):
+        """Iteration of a board is simply its tiles in order."""
+
         for row in self.layout:
             for tile in row:
                 yield str(tile)
 
+    def __str__(self):
+        """String representation of layout"""
+
+        theString = ''
+        for tile in self:
+            theString += tile + ", "
+        return theString
+
     class Tile:
 
-        # color order shoudl be green, blue, purple, orange, yellow, red
-        LEVEL_COLORS = [0xFFFFF1, 0xFFFFF2, 0xFFFFF3, 0xFFFFF4, 0xFFFFF5, 0xFFFFF6]
+        # lazy weighted colors... temporary... demonstration value
+        LEVEL_COLORS = ['#102510','#102510','#102510','#102510', '#102510', '#232110', '#101022']
         EVENT_GEN = EventGenerator()
 
         def __init__(self, x, y, level):
+            """Sets up coordinates, whether visited, terrain color, and random event"""
+
             self.x = x
             self.y = y
             self.visited = False
-            self.bg = self.LEVEL_COLORS[level]
+            self.bg = random.choice(self.LEVEL_COLORS)
             self.event = self.EVENT_GEN.generate_event()
 
+
+        def copy(self):
+            """Returns a complete copy of self"""
+
+            newTile = Board.Tile(self.x, self.y, 0)
+            newTile.visited = self.visited
+            newTile.bg = self.bg
+            newTile.event = self.event
+            return newTile
+
         def __str__(self):
-            return "Coord( " + str(self.x) + ', ' + str(self.y) + ' )' + "; Color=" + str(self.bg)
+            """String rep of some tile state"""
+
+            return "Coord( " + str(self.x) + ', ' + str(self.y) + ' )' + "; Visited=" + str(self.visited)

@@ -2,9 +2,10 @@ from Tkinter import *
 
 
 class InputField():
-    """Takes and processes user input"""
+    """Takes and processes user input (should probably inherit from Entry class)"""
 
     def __init__(self, root, herometer):
+        """Sets up entry box and validation command"""
 
         vcmd = (root.register(self.on_validate),
                 '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
@@ -14,18 +15,19 @@ class InputField():
         self.herometer = herometer
 
     def on_validate(self, d, i, P, s, S, v, V, W):
+        """Validates textbox input and determining color text box contents"""
 
-        """
-        print "DEBUG OUTPUT:"
-        print "d='%s'" % d
-        print "i='%s'" % i
-        print "P='%s'" % P
-        print "s='%s'" % s
-        print "S='%s'" % S
-        print "v='%s'" % v
-        print "V='%s'" % V
-        print "W='%s'" % W
-        """
+        # """
+        # print "DEBUG OUTPUT:"
+        # print "d='%s'" % d
+        # print "i='%s'" % i
+        # print "P='%s'" % P
+        # print "s='%s'" % s
+        # print "S='%s'" % S
+        # print "v='%s'" % v
+        # print "V='%s'" % V
+        # print "W='%s'" % W
+        # """
 
         is_complete = self.herometer.validate_input(P.lstrip())
 

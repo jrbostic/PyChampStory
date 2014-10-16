@@ -10,16 +10,16 @@ class Herometer:
     """All functionality to format data and move Hero state info to view"""
 
     def __init__(self, hero_name):
+        """Sets up interface to hero abilities data (so far)"""
 
         # couple hero and board so they can mediate their own crap.
         self.hero = Hero(hero_name)
         self.board = Board(self.hero)
         self.hero._set_board(self.board)  # in this instance, I'm deeming this okay
 
-        self.abilities = self._build_ability_table(inspect.getmembers
+        self._build_ability_table(inspect.getmembers
                                                    (Hero, predicate=inspect.ismethod))
         self.calls = self._build_calls_table()
-
 
     def _build_ability_table(self, methodList):
         """Builds up a dictionary of method to params"""
@@ -28,18 +28,15 @@ class Herometer:
         method_params = [inspect.getargspec(getattr(Hero, meth))[0][1:] for meth in usable_methods]
         complete_table = {usable_methods[i]: method_params[i] for i in xrange(len(usable_methods))}
 
-        return complete_table
+        self.abilities = complete_table
 
     def _build_calls_table(self):
-        """First index is string, after that regex for variable comparisons
-
-        aMethod[0
-        """
+        """First index is string, after that regex for variable comparisons"""
 
         regexKey = []
         for meth in self.abilities.keys():
 
-            method_matcher = [meth, [re.compile(r'^' + meth + r'[\s]*$'), re.compile(r'^' + meth + r'[\s]*\($')]]
+            method_matcher = [meth, [re.compile(r'^' + meth + r'\s*$'), re.compile(r'^' + meth + r'\s*\($')]]
 
             partial_re = None
             full_re = None
@@ -48,35 +45,35 @@ class Herometer:
                 for param in self.abilities[meth]:
 
                     if param == 'number':
-                        partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)$')]
+                        partial_re = [re.compile(r'^' + meth + r'\s*\(\s*$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[0-9]+$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[0-9]+\s*$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[0-9]+\s*\)$')]
 
-                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*[0-9]+[\s]*\)[\s]*$')]
+                        full_re = [re.compile(r'^' + meth + r'\s*\(\s*[0-9]+\s*\)\s*$')]
 
                     elif param == 'string':
-                        partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["]?$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["]?$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*$'),
+                        partial_re = [re.compile(r'^' + meth + r'\s*\(\s*"?$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*"[\w\s]*$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*"[\w\s]*"?$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*"[\w\s]*"\s*$'),
 
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\']?$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\']?$'),
-                                      re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*$')]
+                                      re.compile(r'^' + meth + r'\s*\(\s*[\']?$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[\'][\w\s]*$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[\'][\w\s]*[\']?$'),
+                                      re.compile(r'^' + meth + r'\s*\(\s*[\'][\w\s]*[\']\s*$')]
 
-                        full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)$'),
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*["][\w\s]*["][\s]*\)[\s]*$'),
+                        full_re = [re.compile(r'^' + meth + r'\s*\(\s*"[\w\s]*"\s*\)$'),
+                                   re.compile(r'^' + meth + r'\s*\(\s*"[\w\s]*"\s*\)\s*$'),
 
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)$'),
-                                   re.compile(r'^' + meth + r'[\s]*\([\s]*[\'][\w\s]*[\'][\s]*\)[\s]*$')]
+                                   re.compile(r'^' + meth + r'\s*\(\s*[\'][\w\s]*[\']\s*\)$'),
+                                   re.compile(r'^' + meth + r'\s*\(\s*[\'][\w\s]*[\']\s*\)\s*$')]
 
             else:
 
-                partial_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*$')]
-                full_re = [re.compile(r'^' + meth + r'[\s]*\([\s]*\)$'),
-                           re.compile(r'^' + meth + r'[\s]*\([\s]*\)[\s]*$')]
+                partial_re = [re.compile(r'^' + meth + r'\s*\(\s*$')]
+                full_re = [re.compile(r'^' + meth + r'\s*\(\s*\)$'),
+                           re.compile(r'^' + meth + r'\s*\(\s*\)\s*$')]
 
             method_matcher[1].extend(partial_re)
             method_matcher.append(full_re)
@@ -111,6 +108,7 @@ class Herometer:
             return None
 
     def execute_method(self, text):
+        """Mediates execution of user-issued command"""
 
         result = ''
         if text is not None:
@@ -118,10 +116,12 @@ class Herometer:
         return result
 
     def get_hero_position(self):
+        """Returns current hero position"""
 
         return self.hero.curr_tile
 
     def get_available_methods(self):
+        """Provides formatted list of available methods for display"""
 
         method_list = []
         for meth in self.abilities:
@@ -139,5 +139,6 @@ class Herometer:
         return method_list
 
     def get_board_coupler(self):
+        """Gets reference to coupler"""
 
         return self.board.coupler

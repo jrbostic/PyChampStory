@@ -8,7 +8,7 @@ class GameMap:
         """Sets up canvas and herometer reference"""
 
         self.gamemap = Canvas(root)
-        self.gamemap['bg'] = "black" #'#228b22'
+        self.gamemap['bg'] = '#228b22'
         self.gamemap['bd'] = 0
         self.gamemap['relief'] = 'solid'
 
@@ -51,14 +51,17 @@ class GameMap:
                 count += 1
                 self.gamemap.create_text(x + widthslice // 10 + 3, y + heightslice // 10 + 4, text=str(count),
                                          fill="white")
+        self.gamemap.create_rectangle(2, 2, widthslice*10+1, heightslice*10+1, fill="", outline="white", width = 2)
 
     def _render_tiles(self, tiles, wslice, hslice):
         """Handles rendering of each tile on the board based on state"""
 
         for row in tiles:
             for atile in row:
+                basex = wslice*atile.x
+                basey = hslice*atile.y
                 if atile.visited is True:
-                    basex = wslice*atile.x
-                    basey = hslice*atile.y
                     self.gamemap.create_rectangle(basex, basey, basex+wslice, basey+hslice, fill=atile.bg)
+                else:
+                    self.gamemap.create_rectangle(basex, basey, basex+wslice, basey+hslice, fill="black")
 

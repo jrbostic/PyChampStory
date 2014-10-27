@@ -31,7 +31,7 @@ class GameMap:
             self._render_tiles(tiles, widthslice, heightslice)
 
         if tiles[herox][heroy].event is not None:
-            tiles[herox][heroy].event.render_event(self.gamemap._root())
+            tiles[herox][heroy].event.render_event(self.gamemap._root(), herox, heroy)
 
         for x in xrange(2, width, widthslice):
             y = 0

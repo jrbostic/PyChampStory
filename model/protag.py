@@ -41,11 +41,11 @@ class Hero:
         list = ["nothing at all", "a hat", "some underwear", "cash", "a badge of honor"]
         return self.name + " searches... and finds " + random.choice(list) + "!"
 
-    def breakdance(self):
+    def dance(self):
         return self.name + " busts a sweet move!"
 
-    def open(self):
-        return "There's nothing for " + self.name + ' to open!'
+    def open(self, string):
+        return self.name + " opens the " + string + '!'
 
     def say(self, string):
         return self.name + " says '" + string + "'."

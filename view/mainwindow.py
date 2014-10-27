@@ -15,7 +15,7 @@ class MainWindow():
         self.root.attributes("-zoomed", True)
         #self.root.resizable(0,0)
         self.root.title("PyChamp Story - The Adventures of " + name)
-        self.root['bg'] = '#228b22'
+        self.root['bg'] = '#656565'
 
         self.herometer = Herometer(name)
         self.coupler = self.herometer.get_board_coupler()
@@ -42,16 +42,16 @@ class MainWindow():
                                  command=self.exit_action, bg='red', fg='white')
         self.entrybox = InputField(self.root, self.herometer)
         self.gameboard = gamemap.GameMap(self.root, self.herometer)
-        self.gameboard.gamemap.config(highlightbackground='#228b22')
+        self.gameboard.gamemap.config(highlightbackground='#656565')
         self.profile = Canvas(self.root, bg='green')  # placeholder
 
         self.var = StringVar()
-        self.abilitybox = Label(self.root, textvariable=self.var, relief=RAISED,
-                                anchor=NW, justify=LEFT, padx=15, pady=15)
+        self.abilitybox = Label(self.root, textvariable=self.var, relief=GROOVE,
+                                anchor=NW, justify=LEFT, padx=15, pady=15, fg='white', bg='black', bd='2')
 
         self.var2 = StringVar()
         self.outputbox = Label(self.root, textvariable=self.var2, relief=SUNKEN,
-                               anchor=SW, justify=LEFT, wraplength=355)
+                               anchor=SW, justify=LEFT, wraplength=355, fg='white', bg='black', bd='2')
 
 
     def _arrange_components(self):

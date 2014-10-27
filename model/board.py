@@ -29,6 +29,9 @@ class Board:
                     the_layout[i].append(ref.layout[n][i].copy())
                 else:
                     the_layout[i].append(self.Tile(n, i, self.level))
+
+        the_layout[0][0].event = None  # first tile has no event
+
         return the_layout
 
     def step(self, hero):
@@ -58,7 +61,8 @@ class Board:
         console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
         self.coupler.add_job({'message': console_message, 'board': self._copy_layout(), 'hero': hero.__copy__()})
 
-        return True #this will allow interruption of a move by event once implemented
+        # returns whether event was not encountered on this step
+        return self.layout[hero.curr_tile['y']][hero.curr_tile['x']].event is None
 
     def _copy_layout(self):
         """Copies layout of board for Coupler input"""
@@ -83,7 +87,7 @@ class Board:
     class Tile:
 
         # lazy weighted colors... temporary... demonstration value
-        LEVEL_COLORS = ['#102510','#102510','#102510','#102510', '#102510', '#232110', '#101022']
+        LEVEL_COLORS = ['#102510', '#102510', '#102510', '#102510', '#102510', '#232110', '#101022']
         EVENT_GEN = EventGenerator()
 
         def __init__(self, x, y, level):
@@ -93,7 +97,10 @@ class Board:
             self.y = y
             self.visited = False
             self.bg = random.choice(self.LEVEL_COLORS)
-            self.event = self.EVENT_GEN.generate_event()
+            if random.random() < .25:
+                self.event = self.EVENT_GEN.generate_event()
+            else:
+                self.event = None
 
 
         def copy(self):

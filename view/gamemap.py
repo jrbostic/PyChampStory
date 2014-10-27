@@ -30,6 +30,9 @@ class GameMap:
         if tiles is not None:
             self._render_tiles(tiles, widthslice, heightslice)
 
+        if tiles[herox][heroy].event is not None:
+            tiles[herox][heroy].event.render_event(self.gamemap._root())
+
         for x in xrange(2, width, widthslice):
             y = 0
             self.gamemap.create_line(x, y, x, boardheight, fill="black", width=2)

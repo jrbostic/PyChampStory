@@ -36,7 +36,7 @@ class EventGenerator:
             button = Button(self.event_window, text="Run Away", command=self.event_window.destroy)
             button.pack()
 
-            x = root.winfo_rooty()
+            x = root.winfo_rootx()
             y = root.winfo_rooty()
             geom = "+%d+%d" % (x + root.winfo_width()/2, y + root.winfo_height()/3)
 

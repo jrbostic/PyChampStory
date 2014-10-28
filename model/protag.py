@@ -26,7 +26,7 @@ class Hero:
             return "You crazy man... philosophical... seriously."
 
         else:
-            origin = str(self.curr_tile)
+            # origin = str(self.curr_tile)
             self.dest_tile = {'x': (number - 1) % 10, 'y': (number - 1) // 10}
             cont = True
             while self.curr_tile != self.dest_tile and cont:

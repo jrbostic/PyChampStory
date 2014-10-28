@@ -38,14 +38,13 @@ class GameMap:
             x = 0
             self.gamemap.create_line(x, y, boardwidth, y, fill="black", width=2)
 
-        if tiles[herox][heroy].event is not None:
-            tiles[herox][heroy].event.render_event(self.gamemap._root(), herox, heroy)
+        herox_adjusted = herox * widthslice
+        heroy_adjusted = heroy * heightslice
 
-        herox *= widthslice
-        heroy *= heightslice
-
-        self.gamemap.create_oval(herox + widthslice // 4, heroy + heightslice // 3, herox + widthslice // 4 + 20,
-                                 heroy + heightslice // 3 + 20,
+        self.gamemap.create_oval(herox_adjusted + widthslice // 4,
+                                 heroy_adjusted + heightslice // 3,
+                                 herox_adjusted + widthslice // 4 + 20,
+                                 heroy_adjusted + heightslice // 3 + 20,
                                  fill="green", outline="black")
 
         count = 0
@@ -55,6 +54,9 @@ class GameMap:
                 self.gamemap.create_text(x + widthslice // 10 + 3, y + heightslice // 10 + 4, text=str(count),
                                          fill="white")
         self.gamemap.create_rectangle(2, 2, widthslice*10+1, heightslice*10+1, fill="", outline="white", width = 2)
+
+        if tiles[herox][heroy].event is not None:
+            tiles[herox][heroy].event.render_event(self.gamemap._root(), herox, heroy)
 
 
     def _render_tiles(self, tiles, wslice, hslice):

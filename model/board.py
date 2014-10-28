@@ -5,6 +5,7 @@ from protag import Hero
 
 
 class Board:
+
     def __init__(self, hero):
         """Initialize at level 0, setup layout and coupler"""
 

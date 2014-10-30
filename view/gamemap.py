@@ -56,7 +56,7 @@ class GameMap:
         self.gamemap.create_rectangle(2, 2, widthslice*10+1, heightslice*10+1, fill="", outline="white", width = 2)
 
         if tiles[herox][heroy].event is not None:
-            tiles[herox][heroy].event.render_event(self.gamemap._root(), herox, heroy)
+            tiles[herox][heroy].event.render_event(self.gamemap, herox, heroy)
 
 
     def _render_tiles(self, tiles, wslice, hslice):

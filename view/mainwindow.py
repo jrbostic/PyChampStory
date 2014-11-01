@@ -41,7 +41,7 @@ class MainWindow():
         self.exitbutton = Button(self.root, text="Exit",
                                  command=self.exit_action, bg='red', fg='white')
         self.entrybox = InputField(self.root, self.herometer)
-        self.gameboard = gamemap.GameMap(self.root, self.herometer)
+        self.gameboard = gamemap.GameMap(self.root, self.herometer, self)
         self.gameboard.gamemap.config(highlightbackground='#656565')
         self.profile = Canvas(self.root, bg='green')  # placeholder
 

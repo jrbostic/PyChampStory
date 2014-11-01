@@ -6,4 +6,9 @@ class ItemGenerator:
         pass
 
     def generate_item(self):
-        pass
+        return self.Item()
+
+    class Item:
+
+        def __init__(self):
+            self.name = "silver boots"

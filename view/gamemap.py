@@ -1,10 +1,9 @@
 from Tkinter import *
 
-
 class GameMap:
     """Handles game board view (probably should inherit from Canvas"""
 
-    def __init__(self, root, herometer):
+    def __init__(self, root, herometer, mainwindow):
         """Sets up canvas and herometer reference"""
 
         self.gamemap = Canvas(root)
@@ -14,6 +13,7 @@ class GameMap:
 
         self.herometer = herometer
 
+        self.mainwindow = mainwindow
 
     def updateMap(self, herox=0, heroy=0, tiles=None):
         """Updates the game map for view"""
@@ -55,8 +55,11 @@ class GameMap:
                                          fill="white")
         self.gamemap.create_rectangle(2, 2, widthslice*10+1, heightslice*10+1, fill="", outline="white", width = 2)
 
-        if tiles[herox][heroy].event is not None:
+        if tiles[herox][heroy].event is not None and tiles[herox][heroy].first_time is True:
+            message = tiles[herox][heroy].event.event_message
+            self.mainwindow._update_outputbox(message)
             tiles[herox][heroy].event.render_event(self.gamemap, herox, heroy)
+
 
 
     def _render_tiles(self, tiles, wslice, hslice):

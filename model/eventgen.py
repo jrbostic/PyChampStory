@@ -1,5 +1,6 @@
 from Tkinter import *
 from itemgen import ItemGenerator
+import random
 
 __author__ = 'jessebostic'
 
@@ -20,28 +21,75 @@ class EventGenerator:
 
     class GameEvent():
 
+        TYPES = ['gift', 'input', 'options']
+
+        #dict of game type to list of event tuple
+        # { type : [(console message, win title, win text, [button text], accomplished)]
+        DETAIL_DICT = {'gift': [("Gift Event Occurred", "Discovered an Item!", "You found ", ["Take It", "Leave It"], True)],
+                        'input': [("Input Event Occurred", "Type Command", "A barrel is coming for you...", ["Do", "Run Away"], False)],
+                        'options': [("Options Event Occurred", "Select an Option", "Which would be best?", ["A", "B", "C", "D"], False)]}
+
         def __init__(self):
 
-            self.item = EventGenerator.ITEM_GEN.generate_item()
-            self.event_window = None
+            self.event_window = None  # this is basically private
+
+            self.event_type = None  # will allow for diff types of games
+
+            self.event_item = None
+
+            self.event_message = None  # for output box in main window
+            self.event_title = None  # for toplevel window title
+            self.event_text = None  # the challenge description
+
+            self.event_buttons = None
+
+            self.accomplished = False
+
+            self.generate()
+
+        def generate(self):
+            self.event_type = random.choice(self.TYPES)
+            self.event_item = EventGenerator.ITEM_GEN.generate_item()
+
+            event_details = random.choice(self.DETAIL_DICT[self.event_type])
+            if event_details is not None:
+                self.event_message = event_details[0]
+                self.event_title = event_details[1]
+                self.event_text = event_details[2]
+
+                self.event_buttons = event_details[3]
+
+                self.accomplished = event_details[4]
+
+
+
 
         def render_event(self, root, tilex, tiley):
 
             self.event_window = Toplevel(root)
-            self.event_window.title("An Event")
+            self.event_window.title(self.event_title)
 
-            message = Message(self.event_window, text="An event has occurred at tile ("
-                                                      + str(tilex) + ", " + str(tiley) + ")")
+            if self.event_type == 'gift':
+                self.event_text += self.event_item.name
+
+            message = Message(self.event_window, text=self.event_text)
+
+            # text="An event has occurred at tile ("
+            # + str(tilex) + ", " + str(tiley) + ")")
+
             message.pack()
-            button = Button(self.event_window, text="Run Away", command=self.event_window.destroy)
-            button.pack()
+
+            for b_text in self.event_buttons:
+                button = Button(self.event_window, text=b_text, command=self.event_window.destroy)
+                button.pack()
 
             x = root.winfo_rootx()
             y = root.winfo_rooty()
-            geom = "+%d+%d" % (x + root.winfo_width()/2, y + root.winfo_height()/3)
+            geom = "%dx%d%+d%+d" % (root.winfo_width()/2, root.winfo_height()/2,
+                                    x + root.winfo_width()/4, y + root.winfo_height()/4)
 
             self.event_window.geometry(geom)
-            self.event_window.grab_set()
+            #self.event_window.grab_set()
             self.event_window.focus_set()
             button.focus_set()
             self.event_window.transient(root)

@@ -62,6 +62,8 @@ class Board:
         console_message = hero.name + " moved from tile " + str(last_tile_num) + " to tile " + str(curr_tile_num)
         self.coupler.add_job({'message': console_message, 'board': self._copy_layout(), 'hero': hero.__copy__()})
 
+        self.layout[curry][currx].first_time = False
+
         # returns whether event was not encountered on this step
         return self.layout[hero.curr_tile['y']][hero.curr_tile['x']].event is None
 
@@ -96,8 +98,11 @@ class Board:
 
             self.x = x
             self.y = y
+            self.first_time = True
             self.visited = False
             self.bg = random.choice(self.LEVEL_COLORS)
+
+            # 25 percent of tiles have events
             if random.random() < .25:
                 self.event = self.EVENT_GEN.generate_event()
             else:
@@ -108,9 +113,11 @@ class Board:
             """Returns a complete copy of self"""
 
             newTile = Board.Tile(self.x, self.y, 0)
+            newTile.first_time = self.first_time
             newTile.visited = self.visited
             newTile.bg = self.bg
             newTile.event = self.event
+
             return newTile
 
         def __str__(self):

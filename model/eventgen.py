@@ -48,6 +48,7 @@ class EventGenerator:
             self.generate()
 
         def generate(self):
+
             self.event_type = random.choice(self.TYPES)
             self.event_item = EventGenerator.ITEM_GEN.generate_item()
 
@@ -67,31 +68,32 @@ class EventGenerator:
             self.event_window = Toplevel(root)
             self.event_window.title(self.event_title)
 
+            # put message into the window
             if self.event_type == 'gift':
                 self.event_text += self.event_item.name + "!"
-
-            frame = Frame(self.event_window)
             message = Message(self.event_window, text=self.event_text, width=200)
 
-            # text="An event has occurred at tile ("
-            # + str(tilex) + ", " + str(tiley) + ")")
-
-            message.pack(expand=1)
-
+            # bottom panel of buttons (options basically)
+            frame = Frame(self.event_window)
             b_count = 0
             for b_text in self.event_buttons:
                 b_count += 1
                 button = Button(frame, text=b_text, command=self.event_window.destroy)
                 button.grid(row=0, column=b_count, sticky=S)
+
+            message.pack(expand=1)
             frame.pack(anchor=CENTER)
 
+            #set size and location
             x = root.winfo_rootx()
             y = root.winfo_rooty()
             geom = "%dx%d%+d%+d" % (root.winfo_width() / 2, root.winfo_height() / 2,
                                     x + root.winfo_width() / 4, y + root.winfo_height() / 4)
 
+            # makes event win appear, in focus, remaining at front
             self.event_window.geometry(geom)
             self.event_window.grab_set()
             self.event_window.focus_set()
             button.focus_set()
             self.event_window.transient(root)
+

@@ -142,3 +142,10 @@ class Herometer:
         """Gets reference to coupler"""
 
         return self.board.coupler
+
+    def get_stats(self):
+
+        h = self.hero
+        stats = [('KNOWLEDGE', h.knowledge), ('', ''), ('FORM', h.form), ('RIGOR', h.rigor),
+                 ('SPUNK', h.spunk), ('', ''), ('CASH', "$"+str(h.cash))]
+        return stats

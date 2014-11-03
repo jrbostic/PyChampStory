@@ -5,6 +5,7 @@ import time
 from validator import *
 from control.herometer import Herometer
 import gamemap
+import statdisplay
 
 
 class MainWindow():
@@ -43,7 +44,7 @@ class MainWindow():
         self.entrybox = InputField(self.root, self.herometer)
         self.gameboard = gamemap.GameMap(self.root, self.herometer, self)
         self.gameboard.gamemap.config(highlightbackground='#656565')
-        self.profile = Canvas(self.root, bg='green')  # placeholder
+        self.profile = statdisplay.StatDisplay(self.root, self.herometer)  # placeholder
 
         self.var = StringVar()
         self.abilitybox = Label(self.root, textvariable=self.var, relief=GROOVE,

@@ -23,11 +23,16 @@ class EventGenerator:
         TYPES = ['gift', 'input', 'options']
 
         # dict of game type to list of event tuple
-        # { type : [(console message, win title, win text, [button text], accomplished)]
+        # { type : [(console message, win title, win text, [(component type, text, command), ... ], accomplished)]
         DETAIL_DICT = {
-            'gift': [("Gift Event Occurred", "Discovered an Item!", "You found ", ["Take It", "Leave It"], True)],
-            'input': [("Input Event Occurred", "Type Command", "A barrel is coming for you...", ["Do", "Run Away"], False)],
-            'options': [("Options Event Occurred", "Select an Option", "Which of these is a string?", ["5", "3.45", "false", "'hello'"], False)]}
+            'gift': [("Gift Event Occurred", "Discovered an Item!", "You found {}!",
+                      [('button', "Take It", None), ('button', "Leave It", None)], True)],
+            'input': [("Input Event Occurred", "Type Command", "A barrel is coming for you...",
+                       [('validator', "Entry TEXT", None),('button', "Do", None),('button', "Run Away", None)], False)],
+            'options': [("Options Event Occurred", "Select an Option", "Which of these is a string?", [('button', "5", None),
+                                                                                                       ('button', "4.53", None),
+                                                                                                       ('button', "False", None),
+                                                                                                       ('button', "'hello'", None)], False)]}
 
         def __init__(self):
 
@@ -41,7 +46,7 @@ class EventGenerator:
             self.event_title = None  # for toplevel window title
             self.event_text = None  # the challenge description
 
-            self.event_buttons = None
+            self.event_widgets = None
 
             self.accomplished = False
 
@@ -58,7 +63,7 @@ class EventGenerator:
             self.event_title = event_details[1]
             self.event_text = event_details[2]
 
-            self.event_buttons = event_details[3]
+            self.event_widgets = event_details[3]
 
             self.accomplished = event_details[4]
 
@@ -70,16 +75,20 @@ class EventGenerator:
 
             # put message into the window
             if self.event_type == 'gift':
-                self.event_text += self.event_item.name + "!"
+                self.event_text = self.event_text.format(self.event_item.name)
             message = Message(self.event_window, text=self.event_text, width=200)
 
             # bottom panel of buttons (options basically)
             frame = Frame(self.event_window)
             b_count = 0
-            for b_text in self.event_buttons:
+            for widget in self.event_widgets:
                 b_count += 1
-                button = Button(frame, text=b_text, command=self.event_window.destroy)
-                button.grid(row=0, column=b_count, sticky=S)
+                w = None
+                if widget[0] == 'button':
+                    w = Button(frame, text=widget[1], command=self.event_window.destroy)
+                elif widget[0] == 'validator':
+                    w = Entry(frame, text=widget[1])
+                w.grid(row=0, column=b_count, sticky=NW+SE)
 
             message.pack(expand=1)
             frame.pack(anchor=CENTER)
@@ -94,6 +103,5 @@ class EventGenerator:
             self.event_window.geometry(geom)
             self.event_window.grab_set()
             self.event_window.focus_set()
-            button.focus_set()
             self.event_window.transient(root)
 

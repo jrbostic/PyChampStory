@@ -17,15 +17,16 @@ class Herometer:
         self.board = Board(self.hero)
         self.hero._set_board(self.board)  # in this instance, I'm deeming this okay
 
-        self._build_ability_table(inspect.getmembers
-                                                   (Hero, predicate=inspect.ismethod))
+        self._build_ability_table(Hero)
         self.calls = self._build_calls_table()
 
-    def _build_ability_table(self, methodList):
+    def _build_ability_table(self, the_class):
         """Builds up a dictionary of method to params"""
 
-        usable_methods = [meth[0] for meth in methodList if meth[0][0] is not '_']
-        method_params = [inspect.getargspec(getattr(Hero, meth))[0][1:] for meth in usable_methods]
+        method_list = inspect.getmembers(the_class, predicate=inspect.ismethod)
+
+        usable_methods = [meth[0] for meth in method_list if meth[0][0] is not '_']
+        method_params = [inspect.getargspec(getattr(the_class, meth))[0][1:] for meth in usable_methods]
         complete_table = {usable_methods[i]: method_params[i] for i in xrange(len(usable_methods))}
 
         self.abilities = complete_table

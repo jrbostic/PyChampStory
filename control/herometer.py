@@ -150,3 +150,9 @@ class Herometer:
         stats = [('KNOWLEDGE', h.knowledge), ('', ''), ('FORM', h.form), ('RIGOR', h.rigor),
                  ('SPUNK', h.spunk), ('', ''), ('CASH', "$"+str(h.cash))]
         return stats
+
+    def add_to_bag(self, the_item):
+        self.hero.bag.append(the_item)
+        for item in self.hero.bag:
+            print item.name
+        print

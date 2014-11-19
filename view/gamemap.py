@@ -1,5 +1,6 @@
 from Tkinter import *
 
+# noinspection PyInterpreter
 class GameMap:
     """Handles game board view (probably should inherit from Canvas"""
 
@@ -58,7 +59,9 @@ class GameMap:
         if tiles[herox][heroy].event is not None and tiles[herox][heroy].first_time is True:
             message = tiles[herox][heroy].event.event_message
             self.mainwindow._update_outputbox(message)
-            tiles[herox][heroy].event.render_event(self.gamemap, herox, heroy)
+            tiles[herox][heroy].event.render_event(self.gamemap, self.herometer, herox, heroy)
+            # if tiles[herox][heroy].event.accomplished:
+            #     self.herometer.add_to_bag(tiles[herox][heroy].event.event_item)
 
 
 

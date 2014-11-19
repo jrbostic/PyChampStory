@@ -26,13 +26,15 @@ class EventGenerator:
         # { type : [(console message, win title, win text, [(component type, text, command), ... ], accomplished)]
         DETAIL_DICT = {
             'gift': [("Gift Event Occurred", "Discovered an Item!", "You found {}!",
-                      [('button', "Take It", None), ('button', "Leave It", None)], True)],
+                      [('button', "Take It", True), ('button', "Leave It", False)], False)],
             'input': [("Input Event Occurred", "Type Command", "A barrel is coming for you...",
                        [('validator', "Entry TEXT", None),('button', "Do", None),('button', "Run Away", None)], False)],
-            'options': [("Options Event Occurred", "Select an Option", "Which of these is a string?", [('button', "5", None),
-                                                                                                       ('button', "4.53", None),
-                                                                                                       ('button', "False", None),
-                                                                                                       ('button', "'hello'", None)], False)]}
+            'options': [("Options Event Occurred", "Select an Option", "Which of these is a string?", [('button', "5", False),
+                                                                                                       ('button', "4.53", False),
+                                                                                                       ('button', "False", False),
+                                                                                                       ('button', "'hello'", True)], False)]}
+
+
 
         def __init__(self):
 
@@ -67,8 +69,14 @@ class EventGenerator:
 
             self.accomplished = event_details[4]
 
+        def eval_success(self, herometer, success):
+            self.accomplished = success
+            print success
+            if success:
+                herometer.add_to_bag(self.event_item)
+            self.event_window.destroy()
 
-        def render_event(self, root, tilex, tiley):
+        def render_event(self, root, herometer, tilex, tiley):
 
             self.event_window = Toplevel(root)
             self.event_window.title(self.event_title)
@@ -85,10 +93,12 @@ class EventGenerator:
                 b_count += 1
                 w = None
                 if widget[0] == 'button':
-                    w = Button(frame, text=widget[1], command=self.event_window.destroy)
+                    w = Button(frame, text=widget[1], command=lambda booly=widget[2]: self.eval_success(herometer, booly))
+                    w.grid(row=0, column=b_count, sticky=NW+SE)
                 elif widget[0] == 'validator':
-                    w = Entry(frame, text=widget[1])
-                w.grid(row=0, column=b_count, sticky=NW+SE)
+                    import view.validator
+                    w = view.validator.InputField(frame, herometer)#Entry(frame, text=widget[1])
+                    w.entry.grid(row=0, column=b_count, sticky=NW+SE)
 
             message.pack(expand=1)
             frame.pack(anchor=CENTER)

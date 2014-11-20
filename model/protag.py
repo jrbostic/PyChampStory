@@ -41,25 +41,25 @@ class Hero:
                 cont = self.board.step(self)
             self.dest_tile = self.curr_tile #if move breaks early by event, player will start where interrupted
 
+    def use(self, string):
+        return self.name + " uses {}.".format(string)
 
-    def jump(self):
-        return self.name + " jumped!"
+    def jump(self, string):
+        return self.name + " jumped over {}!".format(string)
 
-    def search(self):
+    def search(self, string):
         list = ["nothing at all", "a hat", "some underwear", "cash", "a badge of honor"]
         return self.name + " searches... and finds " + random.choice(list) + "!"
-
-    def dance(self):
-        return self.name + " busts a sweet move!"
 
     def open(self, string):
         return self.name + " opens the " + string + '!'
 
-    def say(self, string):
-        return self.name + " says '" + string + "'."
-
-    def ask(self, string):
-        return self.name + " asks '" + string + "?'"
+    #
+    # def say(self, string):
+    #     return self.name + " says '" + string + "'."
+    #
+    # def ask(self, string):
+    #     return self.name + " asks '" + string + "?'"
 
     def __copy__(self):
         """Returns copy of hero state (need to figure out pythonic copy process)"""

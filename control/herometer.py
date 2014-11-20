@@ -153,6 +153,3 @@ class Herometer:
 
     def add_to_bag(self, the_item):
         self.hero.bag.append(the_item)
-        for item in self.hero.bag:
-            print item.name
-        print

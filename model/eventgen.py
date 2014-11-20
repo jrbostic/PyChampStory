@@ -71,7 +71,6 @@ class EventGenerator:
 
         def eval_success(self, herometer, success):
             self.accomplished = success
-            print success
             if success:
                 herometer.add_to_bag(self.event_item)
             self.event_window.destroy()

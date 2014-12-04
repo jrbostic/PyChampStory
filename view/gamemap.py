@@ -12,6 +12,8 @@ class GameMap:
         self.gamemap['bd'] = 0
         self.gamemap['relief'] = 'solid'
 
+        self.hero_image = PhotoImage(file="totoro.gif").subsample(15, 14)
+
         self.herometer = herometer
 
         self.mainwindow = mainwindow
@@ -42,11 +44,13 @@ class GameMap:
         herox_adjusted = herox * widthslice
         heroy_adjusted = heroy * heightslice
 
-        self.gamemap.create_oval(herox_adjusted + widthslice // 4,
-                                 heroy_adjusted + heightslice // 3,
-                                 herox_adjusted + widthslice // 4 + 20,
-                                 heroy_adjusted + heightslice // 3 + 20,
-                                 fill="green", outline="black")
+        # self.gamemap.create_oval(herox_adjusted + widthslice // 4,
+        #                          heroy_adjusted + heightslice // 3,
+        #                          herox_adjusted + widthslice // 4 + 20,
+        #                          heroy_adjusted + heightslice // 3 + 20,
+        #                          fill="green", outline="black")
+
+        self.gamemap.create_image((herox_adjusted + widthslice // 4, heroy_adjusted + heightslice // 3 + self.hero_image.height()/4,), image=self.hero_image)
 
         count = 0
         for y in xrange(1, height - heightslice, heightslice):

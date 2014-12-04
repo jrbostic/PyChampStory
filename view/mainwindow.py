@@ -136,7 +136,9 @@ class MainWindow():
 
         job = self.coupler.get_a_job()
         if job is not None:
+
             for component in job.keys():
+
                 if component == 'board':
                     hero = job['hero']
                     if hero is not None:
@@ -144,3 +146,8 @@ class MainWindow():
 
                 elif component == 'message':
                     self._update_outputbox(job[component])
+
+                elif component == 'item_display':
+                    self.profile.items_update()
+            #       self.profile.place(bordermode=OUTSIDE, relx=.02, rely=.02,
+            #                relheight=.20, relwidth=.26)

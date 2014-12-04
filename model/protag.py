@@ -54,10 +54,9 @@ class Hero:
     def open(self, string):
         return self.name + " opens the " + string + '!'
 
-    #
-    # def say(self, string):
-    #     return self.name + " says '" + string + "'."
-    #
+    def say(self, string):
+        return self.name + " says '" + string + "'."
+
     # def ask(self, string):
     #     return self.name + " asks '" + string + "?'"
 

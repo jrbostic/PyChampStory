@@ -103,7 +103,7 @@ class Board:
             self.bg = random.choice(self.LEVEL_COLORS)
 
             # 25 percent of tiles have events
-            if random.random() < .25:
+            if random.random() < .4:
                 self.event = self.EVENT_GEN.generate_event()
             else:
                 self.event = None

@@ -1,3 +1,9 @@
+"""
+Contains the Herometer control structure, a varied source of communication
+between the board views and models.  Also holds the regex data structure which
+is used to validate user input.
+"""
+
 from model.protag import Hero
 from model.board import Board
 import inspect
@@ -7,21 +13,31 @@ __author__ = 'Jesse Bostic'
 
 
 class Herometer:
-    """All functionality to format data and move Hero state info to view"""
+    """Class providing functionality to format data and mutate
+    state of models via activities originating in view.
+    """
 
     def __init__(self, hero_name):
-        """Sets up interface to hero abilities data (so far)"""
+        """Creates hero and board objects, couples them, and builds regex call tables.
+
+        :param hero_name: name of hero
+        """
 
         # couple hero and board so they can mediate their own crap.
         self.hero = Hero(hero_name)
         self.board = Board(self.hero)
-        self.hero._set_board(self.board)  # in this instance, I'm deeming this okay
+        self.hero.set_board(self.board)
 
+        # build up data structures for display and validation
         self._build_ability_table(Hero)
         self.calls = self._build_calls_table()
 
     def _build_ability_table(self, the_class):
-        """Builds up a dictionary of method to params"""
+        """Builds up a dictionary of method to params
+
+        :param the_class: the name of class to build table from
+        :return: None
+        """
 
         method_list = inspect.getmembers(the_class, predicate=inspect.ismethod)
 
@@ -32,9 +48,13 @@ class Herometer:
         self.abilities = complete_table
 
     def _build_calls_table(self):
-        """First index is string, after that regex for variable comparisons"""
+        """Builds up internal data structure to validate user input against.
+        First index is string, after that regex for variable comparisons.
 
-        regexKey = []
+        :return: the regex data structure used to validate
+        """
+
+        regex_key = []
         for meth in self.abilities.keys():
 
             method_matcher = [meth, [re.compile(r'^' + meth + r'\s*$'), re.compile(r'^' + meth + r'\s*\($')]]
@@ -79,27 +99,31 @@ class Herometer:
             method_matcher[1].extend(partial_re)
             method_matcher.append(full_re)
 
-            regexKey.append(method_matcher)
+            regex_key.append(method_matcher)
 
-        return regexKey
+        return regex_key
 
-    def validate_input(self, theInput):
-        """Return True for full match, False for partial, None for no match"""
+    def validate_input(self, the_input):
+        """Validates user input and returns whether a fully matching call exists.
+
+        :param the_input: the string to test
+        :return: True for full match, False for partial, None for no match
+        """
 
         matches = [False, False, False]
 
         # partial sequential and regex match
         for call in self.calls:
-            matches[0] = matches[0] or theInput == call[0][0:len(theInput)]
+            matches[0] = matches[0] or the_input == call[0][0:len(the_input)]
 
         for partialRegex in self.calls:
             for list_of_regex in partialRegex[1]:
-                matches[0] = matches[0] or list_of_regex.match(theInput) is not None
+                matches[0] = matches[0] or list_of_regex.match(the_input) is not None
 
         # full regex match -bad naming convention
         for fullRegex in self.calls:
             for list_of_regex in fullRegex[2]:
-                matches[1] = matches[1] or list_of_regex.match(theInput) is not None
+                matches[1] = matches[1] or list_of_regex.match(the_input) is not None
 
         if matches[1]:
             return True
@@ -108,8 +132,13 @@ class Herometer:
         else:
             return None
 
+    @staticmethod
     def execute_method(self, text):
-        """Mediates execution of user-issued command"""
+        """Executes user-issued command.
+
+        :param text: the validated command to execute
+        :return anything returned by text code (usually console output for action)
+        """
 
         result = ''
         if text is not None:
@@ -117,12 +146,20 @@ class Herometer:
         return result
 
     def get_hero_position(self):
-        """Returns current hero position"""
+        """Get hero x and y board location (the tile occupied).
+        Kind of strange to have this here... should probably be routing
+        this through the coupler.
+
+        :return dict containing x and y locations (keys: 'x', 'y')
+        """
 
         return self.hero.curr_tile
 
     def get_available_methods(self):
-        """Provides formatted list of available methods for display"""
+        """Provides formatted list of available methods for display.
+
+        :return list of method call string reps
+        """
 
         method_list = []
         for meth in self.abilities:
@@ -140,11 +177,18 @@ class Herometer:
         return method_list
 
     def get_board_coupler(self):
-        """Gets reference to coupler"""
+        """Gets reference to job queue 'coupler'.
+
+        :return coupler for adding jobs to event loop
+        """
 
         return self.board.coupler
 
     def get_stats(self):
+        """Returns a set of hero stats to display in game window.
+
+        :return:list of tuples [(stat_name, stat_value), ...]
+        """
 
         h = self.hero
         stats = [('KNOWLEDGE', h.knowledge), ('', ''), ('FORM', h.form), ('RIGOR', h.rigor),
@@ -152,4 +196,9 @@ class Herometer:
         return stats
 
     def add_to_bag(self, the_item):
+        """Pushes passed item into hero bag.
+
+        :param the_item: item to add to back
+        :return: None
+        """
         self.hero.bag.append(the_item)

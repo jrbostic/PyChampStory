@@ -14,6 +14,8 @@ class Hero:
         self.curr_tile = {'x': 0, 'y': 0}
         self.dest_tile = self.curr_tile
 
+        self.board = None
+
         self.form = 1 #practice
         self.rigor = 1 #precision
         self.spunk = 1 #perseverance
@@ -22,7 +24,7 @@ class Hero:
         self.cash = 0
         self.bag = []
 
-    def _set_board(self, board):
+    def set_board(self, board):
         """Attach the board"""
 
         self.board = board

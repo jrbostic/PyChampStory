@@ -1,6 +1,11 @@
+"""
+The gameboard portion of GUI to be used with composition in main window.
+"""
+
 from Tkinter import *
 
-# noinspection PyInterpreter
+__author__ = "jesse bostic"
+
 class GameMap:
     """Handles game board view (probably should inherit from Canvas"""
 
@@ -12,14 +17,21 @@ class GameMap:
         self.gamemap['bd'] = 0
         self.gamemap['relief'] = 'solid'
 
-        self.hero_image = PhotoImage(file="totoro.gif").subsample(15, 14)
+        # scales image but not well (insert hero image in place of 'totoro.gif')
+        self.hero_image = PhotoImage(file='totoro.gif').subsample(15, 14)
 
         self.herometer = herometer
 
         self.mainwindow = mainwindow
 
     def updateMap(self, herox=0, heroy=0, tiles=None):
-        """Updates the game map for view"""
+        """Updates the game map for view
+
+        :param herox: hero x location
+        :param heroy: hero y location
+        :param tiles: reference to board tiles
+        :return: None
+        """
 
         height = self.gamemap.winfo_height()
         width = self.gamemap.winfo_width()
@@ -44,13 +56,8 @@ class GameMap:
         herox_adjusted = herox * widthslice
         heroy_adjusted = heroy * heightslice
 
-        # self.gamemap.create_oval(herox_adjusted + widthslice // 4,
-        #                          heroy_adjusted + heightslice // 3,
-        #                          herox_adjusted + widthslice // 4 + 20,
-        #                          heroy_adjusted + heightslice // 3 + 20,
-        #                          fill="green", outline="black")
-
-        self.gamemap.create_image((herox_adjusted + widthslice // 4, heroy_adjusted + heightslice // 3 + self.hero_image.height()/4,), image=self.hero_image)
+        self.gamemap.create_image((herox_adjusted + widthslice // 4,
+                                   heroy_adjusted + heightslice // 3 + self.hero_image.height()/4,), image=self.hero_image)
 
         count = 0
         for y in xrange(1, height - heightslice, heightslice):
@@ -60,17 +67,20 @@ class GameMap:
                                          fill="white")
         self.gamemap.create_rectangle(2, 2, widthslice*10+1, heightslice*10+1, fill="", outline="white", width = 2)
 
+        # if there is an event and it is the first time encountering it
         if tiles[herox][heroy].event is not None and tiles[herox][heroy].first_time is True:
             message = tiles[herox][heroy].event.event_message
             self.mainwindow._update_outputbox(message)
             tiles[herox][heroy].event.render_event(self.gamemap, self.herometer, herox, heroy)
-            # if tiles[herox][heroy].event.accomplished:
-            #     self.herometer.add_to_bag(tiles[herox][heroy].event.event_item)
-
-
 
     def _render_tiles(self, tiles, wslice, hslice):
-        """Handles rendering of each tile on the board based on state"""
+        """Handles rendering of each tile on the board based on state.
+
+        :param tiles: board tiles to render
+        :param wslice: width of tiles
+        :param hslice: height of tiles
+        :return: None
+        """
 
         for row in tiles:
             for atile in row:

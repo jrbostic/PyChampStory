@@ -2,7 +2,9 @@
 Contains support for selecting random events from a set of known events.
 
 In retrospect, the intended design was not implemented, rendering the inner class unnecessary.
-This should be corrected at some point.
+This should be corrected at some point.  Also, the gui code being in this class was kind of a
+hack to make it work quickly... really the gui code should be in the view and a packet should
+be queued into coupler with event data.
 """
 
 from Tkinter import *
@@ -31,10 +33,13 @@ class EventGenerator:
 
 
     class GameEvent():
+        """Class for generating an event."""
 
+        # currently defined types of events
+        # gift is freebie, input is user code, options is multiple choice
         TYPES = ['gift', 'input', 'options']
 
-        # dict of game type to list of event tuple... should probably be in a db
+        # dict of game type to list of event tuple... quick and dirty, should probably be in a db!
         # { type : [(console message, win title, win text, [(component type, text, command), ... ], accomplished)]
         DETAIL_DICT = {
             'gift': [("Found something!", "Discovered an Item!", "You found a {}!",
@@ -101,9 +106,11 @@ class EventGenerator:
                                                            "\nTrue or False?",
                          [('button', "True", True), ('button', "False", False)], False)]}
 
-
-
         def __init__(self):
+            """Instantiates new event.
+
+            :return new random event
+            """
 
             self.event_window = None  # this is basically private
 
@@ -122,12 +129,16 @@ class EventGenerator:
             self.generate()
 
         def generate(self):
+            """Generates values for members of this event.
+
+            :return: None
+            """
 
             self.event_type = random.choice(self.TYPES)
             self.event_item = EventGenerator.ITEM_GEN.generate_item()
 
             event_details = random.choice(self.DETAIL_DICT[self.event_type])
-            #if event_details is not None:
+
             self.event_message = event_details[0]
             self.event_title = event_details[1]
             self.event_text = event_details[2]
@@ -137,14 +148,27 @@ class EventGenerator:
             self.accomplished = event_details[4]
 
         def eval_success(self, herometer, success):
+            """If action was successful, puts item in bag and queues up new job.
+            Destroys event window as side effect.
+
+            :return None
+            """
+
             self.accomplished = success
             if success:
                 herometer.add_to_bag(self.event_item)
                 herometer.board.coupler.add_job({"item_display": "just fire it"})
             self.event_window.destroy()
 
-
         def render_event(self, root, herometer, tilex, tiley):
+            """Displays event window for this event.
+
+            :param root: the tkinter root widget
+            :param herometer: the herometer object in use
+            :param tilex: tile x location (not currently used)
+            :param tiley: tile y location (not currently used)
+            :return: None
+            """
 
             self.event_window = Toplevel(root)
             self.event_window.title(self.event_title)

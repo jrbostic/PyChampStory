@@ -26,7 +26,7 @@ class Herometer:
         # couple hero and board so they can mediate their own crap.
         self.hero = Hero(hero_name)
         self.board = Board(self.hero)
-        self.hero.set_board(self.board)
+        self.hero._set_board(self.board)
 
         # build up data structures for display and validation
         self._build_ability_table(Hero)
@@ -95,7 +95,6 @@ class Herometer:
                 partial_re = [re.compile(r'^' + meth + r'\s*\(\s*$')]
                 full_re = [re.compile(r'^' + meth + r'\s*\(\s*\)$'),
                            re.compile(r'^' + meth + r'\s*\(\s*\)\s*$')]
-
             method_matcher[1].extend(partial_re)
             method_matcher.append(full_re)
 
@@ -132,7 +131,6 @@ class Herometer:
         else:
             return None
 
-    @staticmethod
     def execute_method(self, text):
         """Executes user-issued command.
 

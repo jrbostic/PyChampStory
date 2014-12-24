@@ -1,3 +1,7 @@
+"""
+Main window that pulls all of the GUI part together.
+"""
+
 import tkMessageBox
 import tkFont
 import time
@@ -7,8 +11,11 @@ from control.herometer import Herometer
 import gamemap
 import statdisplay
 
+__author__ = "jesse bostic"
 
 class MainWindow():
+    """Class for creating GUI instance"""
+
     def __init__(self, name):
         """Conducts setup of the main window"""
 
@@ -54,7 +61,6 @@ class MainWindow():
         self.outputbox = Label(self.root, textvariable=self.var2, relief=SUNKEN,
                                anchor=SW, justify=LEFT, wraplength=355, fg='white', bg='black', bd='2')
 
-
     def _arrange_components(self):
         """Arrange layout of components"""
 
@@ -71,7 +77,7 @@ class MainWindow():
         self.abilitybox.place(bordermode=OUTSIDE, relx=.02, rely=.25,
                               relheight=.40, relwidth=.26)
         self.outputbox.place(bordermode=OUTSIDE, relx=.02, rely=.68,
-                              relheight=.17, relwidth=.26)
+                             relheight=.17, relwidth=.26)
 
     def _update_abilitybox(self):
         """Simple update for hero ability box"""
@@ -82,7 +88,10 @@ class MainWindow():
         self.var.set(abilitybox_text)
 
     def _update_outputbox(self, text):
-        """Simple update for output box"""
+        """Simple update for output box.
+
+        :param text: text to display in console
+        """
 
         if text is None:
             text = ''
@@ -90,7 +99,7 @@ class MainWindow():
             self.var2.set(self.var2.get() + '\n' + text)
 
     def do_action(self, event):
-        """Executes do action of DO button"""
+        """Executes do action of DO button and displays resulting output"""
 
         entered_text = self.entrybox.entry.get()
         output_text = self.herometer.execute_method(entered_text)
@@ -98,16 +107,15 @@ class MainWindow():
         self.entrybox.entry.delete(0, END)
         self.entrybox.entry.focus_set()
 
-
     def exit_action(self):
-        """Facilitates program termination"""
+        """Quit game dialogue and GUI killer."""
 
         answer = tkMessageBox.askyesno('Really Quit?', 'Are you sure you want to quit?')
         if answer:
             exit()
 
     def update_gui(self):
-        """Main event loop"""
+        """Main event loop - all code will run throughout execution"""
 
         if self.entrybox.is_executable and self.dobutton['state'] == 'disabled':
             self.dobutton['state'] = 'active'
@@ -149,5 +157,3 @@ class MainWindow():
 
                 elif component == 'item_display':
                     self.profile.items_update()
-            #       self.profile.place(bordermode=OUTSIDE, relx=.02, rely=.02,
-            #                relheight=.20, relwidth=.26)

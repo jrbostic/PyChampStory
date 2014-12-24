@@ -1,11 +1,22 @@
+"""
+Widget for displaying stats in main window.  Used with composition.
+"""
+
 import Tkinter
 import tkFont
 
 __author__ = 'jessebostic'
 
 class StatDisplay(Tkinter.Canvas):
+    """Subclass of tkinter's Canvas widget for creating stat display window"""
 
     def __init__(self, root, herometer):
+        """Initializes stat display object.
+
+        :param root: the root widget
+        :param herometer: reference to herometer object
+        """
+
         Tkinter.Canvas.__init__(self, root)
         self.herometer = herometer
         self.frame = Tkinter.Frame(self)
@@ -27,7 +38,10 @@ class StatDisplay(Tkinter.Canvas):
         self.stats_update()
 
     def stats_update(self):
+        """Updates all components of stat display.
 
+        :return: None
+        """
         self.delete('all')
 
         font1 = tkFont.Font()
@@ -43,8 +57,12 @@ class StatDisplay(Tkinter.Canvas):
             value = Tkinter.Label(self.frame, text=stat[1], font=font1)
             value.grid(row=count, column=1, ipadx=30, sticky='NWSE')
 
-
     def items_update(self):
+        """Updates items listbox in display
+
+        :return None
+        """
+
         self.bag_display.delete(0, Tkinter.END)
         for item in self.herometer.hero.bag:
             self.bag_display.insert(0, item.name)

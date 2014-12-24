@@ -1,7 +1,14 @@
+"""
+Script to kick off program.  This command line interface is meant to load old games,
+get player name, offer tutorials, and fire up the GUI portion of the game.
+"""
+
 from control.dialoger import *
 from view.mainwindow import MainWindow
 from os import listdir
 from os.path import *
+
+__author__ = "jesse bostic"
 
 debug = computer_talk("DEBUG: Skip to game?", question=True, yesno=True, delay=0)
 if debug:
@@ -38,12 +45,14 @@ computer_talk('\nHello!')
 computer_talk('I am your computer.')
 computer_talk('You can call me HAL...')
 
+# restore saved game (not implemented)
 savedgame = computer_talk('You seem familiar... have we met before?', question=True, yesno=True)
 if savedgame:
     computer_talk('NO SAVED GAMES (OR FUNCTIONALITY FOR THAT MATTER)')
 else:
     computer_talk('Oh, it must just be your kind face.')
 
+# get user name
 name = ''
 verified = False
 while not verified:
@@ -52,6 +61,7 @@ while not verified:
                              + "?", question=True, yesno=True)
 computer_talk("Nice to meet you, " + name + "!")
 
+# offer tutorials that reside in tutorials folder
 tutor = computer_talk("Hey, would you like a brief tutorial on programming?",
                       question=True, yesno=True)
 if tutor:
@@ -87,9 +97,11 @@ if tutor:
         else:
             computer_talk("Select either valid tutorial or exit.")
 
+# lead player into the GUI portion of game
 play = computer_talk("Would you like to play a GAME?", question=True,
                      yesno=True)
 
+# exit game if player changes mind
 if not play:
     computer_talk("Fine, be that way...")
     exit()
